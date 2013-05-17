@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>GroumL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var grid_size = 20;
+            
+            $("div.uml-object").draggable({ grid: [grid_size, grid_size] }).resizable({ grid: [grid_size, grid_size] });
+        });
+    </script>
+    
+    <style>
+        div.uml-object {
+            border: 1px solid #333;
+            position: absolute;
+            padding: 10px;
+            top: 20px;
+            left: 20px;
+        }
+        
+        div.uml-object p.title {
+            border-bottom: 1px solid #333;
+        }
+        
+        div.uml-object ul.fields li {
+            position: relative;
+            clear: both;
+        }
+        
+        div.uml-object ul.fields li span.name {
+            position: relative;
+            float: left;
+        }
+        
+        div.uml-object ul.fields li span.type {
+            position: relative;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="uml-object uml-class">
+        <p class="title">Person</p>
+        <ul class="fields">
+            <li><span class="name">id</span><span class="type">int</span></li>
+            <li><span class="name">first_name</span><span class="type">char</span></li>
+            <li><span class="name">last_name</span><span class="type">char</span></li>
+            <li><span class="name">age</span><span class="type">int</span></li>
+        </ul>
+    </div>
+</body>
+</html>
