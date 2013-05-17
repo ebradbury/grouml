@@ -1,0 +1,26 @@
+div.uml-object {
+    border: 1px solid #333;
+    position: absolute;
+    padding: 10px;
+    top: 20px;
+    left: 20px;
+}
+
+div.uml-object p.name {
+    border-bottom: 1px solid #333;
+}
+
+div.uml-object ul.fields li {
+    position: relative;
+    clear: both;
+}
+
+div.uml-object ul.fields li span.name {
+    position: relative;
+    float: left;
+}
+
+div.uml-object ul.fields li span.type {
+    position: relative;
+    float: right;
+}
