@@ -1,5 +1,6 @@
-// Credit to @erzr for getting this class started
-var GROUML = (function() {
+GROUML = GROUML || {};
+
+GROUML.Generators = (function() {
     var generators = {};
     return {
         registerGenerator: function(name, generator) {
@@ -8,38 +9,38 @@ var GROUML = (function() {
         getGenerator: function(name) {
             return generators[name];
         },
-        getObjectFromUMLObject: function(name) {
-            var object = {};
-            
-            var uObject = $('div.uml-object[data-name=' + name + ']');
-            
-            $(uObject).find('ul.fields li').each(function(index, el) {
-                var name = $(el).attr('data-name');
-                var type = $(el).attr('data-type');
-                
-                object[name] = type;
-            });
-            
-            return object;
-        },
-        generateCodeForUMLObject: function(generator, name) {
-            var object = this.getObjectFromUMLObject(name);
-            
-            console.log(this.getGenerator(generator).generate(name, object));
-        },
+        getGeneratorNames: function() {
+            var names = [];
+            for (var i in generators) {
+                names.push(i);
+            }
+            return names;
+        }
     };
 })();
 
-function camelToUnderscore(str) {
-    return str.replace(/([a-z]+)([A-Z][a-z]+)/g, '$1_$2').toLowerCase();
-}
-
 (function($){
-    $(document).ready(function() {
+    $(function() {
         var grid_size = 20;
-        
+
+        var m = new GROUML.Models.UmlObject({
+            Name: 'Person'
+        });
+
+        var c = new GROUML.Collections.UmlObjectFields([
+            {
+                Name: 'id',
+                Type: 'int'
+            }
+        ]);
+
+        var Test = new GROUML.Views.UmlObject({
+            model: m,
+            collection: c
+        });
+
+        $('body').append(Test.render().el);
+
         $('div.uml-object').draggable({ grid: [grid_size, grid_size] }).resizable({ grid: [grid_size, grid_size] });
-        
-        GROUML.generateCodeForUMLObject('django', 'Person');
     });
 })(jQuery);

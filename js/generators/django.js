@@ -1,28 +1,37 @@
 // Credits to @erzr for initial code
 
-var djangoTypeMapping = {
-    'int': 'IntegerField',
-    'float': 'DecimalField',
-    'boolean': 'BooleanField',
-    'char': 'CharField',
-    'text': 'TextField',
-};
+(function(g, u){
 
-var indent = '    ';
+    var djangoTypeMapping = {
+        'int': 'IntegerField',
+        'float': 'DecimalField',
+        'boolean': 'BooleanField',
+        'char': 'CharField',
+        'text': 'TextField'
+    };
 
-var djangoGenerator = (function() {
-    return {
+    var indent = '    ';
+
+    var djangoGenerator = {
         generate: function(name, obj) {
             var all = 'class ' + name + '(models.Model):\n';
             for(var i in obj) {
+                if (!obj.hasOwnProperty(i)) {
+                    continue;
+                }
+
                 var v = obj[i];
-                
+
                 if (typeof v === 'string') {
-                    all += camelToUnderscore(i) + ' = models.' + djangoTypeMapping[v] + '()\n';
+                    all += u.camelToUnderscore(i) + ' = models.' + djangoTypeMapping[v] + '()\n';
                 } else {
-                    var f = camelToUnderscore(i) + ' = models.' + djangoTypeMapping[v['type']] + '(',
+                    var f = u.camelToUnderscore(i) + ' = models.' + djangoTypeMapping[v['type']] + '(',
                         count = 0;
                     for (var p in v) {
+                        if (!v.hasOwnProperty(p)) {
+                            continue;
+                        }
+
                         if (p !== 'type') {
                             if (count++ !== 0) {
                                 f += ', ';
@@ -36,7 +45,8 @@ var djangoGenerator = (function() {
             }
             return all;
         }
-    }
-})();
+    };
 
-GROUML.registerGenerator('django', djangoGenerator);
+    g.registerGenerator('django', djangoGenerator);
+
+})(GROUML.Generators, GROUML.Utility);
