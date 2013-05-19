@@ -1,13 +1,37 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+div#viewport {
+    min-height: 100%;
+}
+
+div#wall ._tile {
+    background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAIElEQVQYV2OcP3/+fwYiACNI4a9fvwgqHVWIN4iIDh4AbuY3AUcrWFoAAAAASUVORK5CYII=);
+}
+
 div.uml-object {
-    border: 1px solid #333;
     position: absolute;
     padding: 10px;
     top: 20px;
     left: 20px;
+    z-index: 2;
+    border: 1px solid #666;
+    background-color: #222;
+    color: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 div.uml-object p.name {
-    border-bottom: 1px solid #333;
+    font-weight: bold;
+    color: #EF3C7B;
+    border-bottom: 1px solid #666;
+    padding-bottom: 10px;
 }
 
 div.uml-object ul.fields li {
@@ -23,4 +47,16 @@ div.uml-object ul.fields li span.name {
 div.uml-object ul.fields li span.type {
     position: relative;
     float: right;
+    color: #36D986;
+}
+
+div.uml-object div.add-field-wrapper {
+    clear: both;
+    text-align: center;
+}
+
+div.uml-object input.add-field {
+    position: relative;
+    clear: both;
+    margin: 0 auto;
 }
