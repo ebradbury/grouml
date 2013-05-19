@@ -28,6 +28,13 @@ GROUML = GROUML || {};
             },
             'input': function(){
                 this.model.set('Name', this.$el.text());
+            },
+            'keydown': function(e) {
+                if (e.which === 13 || e.which === 27) {
+                    this.$el.blur();
+                    e.preventDefault();
+                    return false;
+                }
             }
         },
         render: function() {
@@ -94,6 +101,13 @@ GROUML = GROUML || {};
             },
             'input': function(){
                 this.model.set('Name', this.$el.text());
+            },
+            'keydown': function(e) {
+                if (e.which === 13 || e.which === 27) {
+                    this.$el.blur();
+                    e.preventDefault();
+                    return false;
+                }
             }
         },
         initialize: function() {
