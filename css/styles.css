@@ -34,6 +34,11 @@ div.uml-object p.name {
     padding-bottom: 10px;
 }
 
+div.uml-object p.name:hover,
+div.uml-object ul.fields li span.name:hover{
+    cursor: text;
+}
+
 div.uml-object ul.fields li {
     position: relative;
     clear: both;

@@ -86,6 +86,16 @@ GROUML = GROUML || {};
         attributes: {
             contentEditable: true
         },
+        events: {
+            'click': function(e) {
+                this.$el.focus();
+                e.stopPropagation();
+                return false;
+            },
+            'input': function(){
+                this.model.set('Name', this.$el.text());
+            }
+        },
         initialize: function() {
             this.model.on('change:Name', this.render, this);
         },
@@ -122,6 +132,33 @@ GROUML = GROUML || {};
             this.$el.append(this._fieldsView.render().el);
             this.$el.append(this._addFieldView.render().el);
             return this;
+        }
+    });
+
+    v.UmlObjects = Backbone.View.extend({
+        id: 'wall',
+        objects: [],
+        add: function(model, collection) {
+            var objectView = new v.UmlObject({
+                model: model,
+                collection: collection
+            });
+            this.objects.push(objectView);
+            this.$el.append(objectView.render().el);
+        },
+        new: function(name) {
+            var m = new GROUML.Models.UmlObject({
+                Name: name
+            });
+
+            var c = new GROUML.Collections.UmlObjectFields([
+                {
+                    Name: 'id',
+                    Type: 'int'
+                }
+            ]);
+
+            this.add(m, c);
         }
     });
 

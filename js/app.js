@@ -19,24 +19,16 @@ GROUML.Generators = (function() {
     };
 })();
 
-GROUML.Core = (function() {
-    return {
-        addFieldToClass: function(fieldName, type, className) {
-            var classDiagram = GROUML.Collections.UmlObjects.findWhere({Name: className, Type: 'Class'});
-            
-            // Are UmlObjectFields tied to specific UmlObjects via FK yet?
-            var field = new GROUML.Models.UmlObjectField({ Name: field, Type: type });
-        },
-    };
-})();
-
 (function($){
     $(function() {
+        var objectView = new GROUML.Views.UmlObjects();
+        $('#viewport').append(objectView.render().el);
+
         var grid_size = 20;
 
         var m = new GROUML.Models.UmlObject({
             Name: 'Person',
-            Type: 'Class',
+            Type: 'Class'
         });
 
         var c = new GROUML.Collections.UmlObjectFields([
@@ -58,12 +50,7 @@ GROUML.Core = (function() {
             }
         ]);
 
-        window.Test = new GROUML.Views.UmlObject({
-            model: m,
-            collection: c
-        });
-
-        $('#wall').append(Test.render().el);
+        objectView.add(m, c);
 
         var infinitedrag = $.infinitedrag("#wall", {}, {
             width: 100,
@@ -74,20 +61,18 @@ GROUML.Core = (function() {
         });
         
         $('div.uml-object').draggable({ grid: [grid_size, grid_size] }).resizable({ grid: [grid_size, grid_size] });
-        $('div.uml-object add-field').on('click', function() {
-            var className = $(this).closest('div.uml-object p.name').text();
-            
-            var field = new GROUML.Models.UmlObjectField({Name: '', Type: ''});
-            
-            // Unfinished. Need to re-render the view for the object so that new, blank field will show up.
-            Test.render().el;
-        });
-        
-        $('#add-class-diagram').button({
+
+        var $addButton = $('#add-class-diagram');
+
+        $addButton.button({
             text: false,
             icons: {
                 primary: "ui-icon-plusthick"
             }
         });
+
+        $addButton.on('click', function() {
+            objectView.new('New Entity')
+        })
     });
 })(jQuery);
