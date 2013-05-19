@@ -49,6 +49,9 @@ GROUML = GROUML || {};
     v.UmlObjectName = Backbone.View.extend({
         tagName: 'p',
         className: 'name',
+        initialize: function() {
+            this.model.on('change:Name', this.render, this);
+        },
         render: function() {
             this.$el.html(this.model.get('Name'));
             return this;

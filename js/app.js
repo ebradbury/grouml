@@ -34,7 +34,7 @@ GROUML.Generators = (function() {
             }
         ]);
 
-        var Test = new GROUML.Views.UmlObject({
+        window.Test = new GROUML.Views.UmlObject({
             model: m,
             collection: c
         });
