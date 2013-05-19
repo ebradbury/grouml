@@ -18,7 +18,15 @@ GROUML = GROUML || {};
         tagName: 'span',
         className: 'name',
         attributes: {
-            contentEditable: true,
+            contentEditable: true
+        },
+        events: {
+            'click': function() {
+                this.$el.focus();
+            },
+            'change': function(){
+                alert('test');
+            }
         },
         render: function() {
             this.$el.html(this.model.get('Name'));
@@ -44,7 +52,11 @@ GROUML = GROUML || {};
     v.UmlObjectFields = Backbone.View.extend({
         tagName: 'ul',
         className: 'fields',
+        initialize: function() {
+            this.collection.on('add', this.render, this);
+        },
         render: function() {
+            this.$el.html('');
             this.collection.each(function(m){
                 this.$el.append(new v.UmlObjectField({model:m}).render().el);
             }, this);
@@ -55,17 +67,22 @@ GROUML = GROUML || {};
     // This seems a little silly to basically define an input button using a view. Please advise.
     v.UmlObjectAddField = Backbone.View.extend({
         className: 'add-field-wrapper',
+        events: {
+            'click input': function() {
+                this.trigger('field:add');
+            }
+        },
         render: function() {
             this.$el.html('<input type="image" src="img/glyphicons/glyphicons_190_circle_plus.png" />');
             return this;
-        },
+        }
     });
     
     v.UmlObjectName = Backbone.View.extend({
         tagName: 'p',
         className: 'name',
         attributes: {
-            contentEditable: true,
+            contentEditable: true
         },
         initialize: function() {
             this.model.on('change:Name', this.render, this);
@@ -85,6 +102,13 @@ GROUML = GROUML || {};
             this._nameView = new v.UmlObjectName({model:this.model});
             this._fieldsView = new v.UmlObjectFields({collection:this.collection});
             this._addFieldView = new v.UmlObjectAddField();
+
+            this._addFieldView.on('field:add', function() {
+                this.collection.add({
+                    Name: 'New Field',
+                    Type: 'int'
+                });
+            }, this);
         },
         render: function() {
             this.$el.append(this._nameView.render().el);
