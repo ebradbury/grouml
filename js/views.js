@@ -67,6 +67,9 @@ GROUML = GROUML || {};
         attributes: {
             contentEditable: true,
         },
+        initialize: function() {
+            this.model.on('change:Name', this.render, this);
+        },
         render: function() {
             this.$el.html(this.model.get('Name'));
             return this;
