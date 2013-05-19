@@ -4,7 +4,8 @@ GROUML = GROUML || {};
 
     m.UmlObject = Backbone.Model.extend({
         defaults: {
-            Name: null
+            Name: null,
+            Type: null // Type of diagram. e.g. Class Diagram
         }
     });
 
