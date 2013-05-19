@@ -82,5 +82,12 @@ GROUML.Core = (function() {
             // Unfinished. Need to re-render the view for the object so that new, blank field will show up.
             Test.render().el;
         });
+        
+        $('#add-class-diagram').button({
+            text: false,
+            icons: {
+                primary: "ui-icon-plusthick"
+            }
+        });
     });
 })(jQuery);

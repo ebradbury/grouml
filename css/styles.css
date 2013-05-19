@@ -17,7 +17,7 @@ div.uml-object {
     position: absolute;
     padding: 10px;
     top: 20px;
-    left: 20px;
+    left: 120px;
     z-index: 2;
     border: 1px solid #666;
     background-color: #222;
@@ -59,4 +59,21 @@ div.uml-object input.add-field {
     position: relative;
     clear: both;
     margin: 0 auto;
+}
+
+/* Toolbar Styles */
+#toolbar {
+    padding: 4px;
+    display: inline-block;
+    z-index: 2;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
+#toolbar .ui-button {
+    float: left;
+    clear: both;
+    margin-right: 0;
+    margin-bottom: .1em;
 }
