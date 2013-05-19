@@ -21,11 +21,13 @@ GROUML = GROUML || {};
             contentEditable: true
         },
         events: {
-            'click': function() {
+            'click': function(e) {
                 this.$el.focus();
+                e.stopPropagation();
+                return false;
             },
-            'change': function(){
-                alert('test');
+            'input': function(){
+                this.model.set('Name', this.$el.text());
             }
         },
         render: function() {
@@ -98,6 +100,11 @@ GROUML = GROUML || {};
         _nameView: null,
         _fieldsView: null,
         _addFieldView: null,
+        events: {
+            'click': function(e) {
+                this.$el.find('[contentEditable]').blur();
+            }
+        },
         initialize: function() {
             this._nameView = new v.UmlObjectName({model:this.model});
             this._fieldsView = new v.UmlObjectFields({collection:this.collection});
