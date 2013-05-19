@@ -1,5 +1,11 @@
 GROUML = GROUML || {};
 
+GROUML.Constants = (function() {
+    return {
+        gridSize: 20,
+    };
+})();
+
 GROUML.Generators = (function() {
     var generators = {};
     return {
@@ -24,7 +30,7 @@ GROUML.Generators = (function() {
         var objectView = new GROUML.Views.UmlObjects();
         $('#viewport').append(objectView.render().el);
 
-        var grid_size = 20;
+        var gridSize = GROUML.Constants.gridSize;
 
         var m = new GROUML.Models.UmlObject({
             Name: 'Person',
@@ -60,8 +66,6 @@ GROUML.Generators = (function() {
             oncreate: function(){},
         });
         
-        $('div.uml-object').draggable({ grid: [grid_size, grid_size] }).resizable({ grid: [grid_size, grid_size] });
-
         var $addButton = $('#add-class-diagram');
 
         $addButton.button({
@@ -72,7 +76,7 @@ GROUML.Generators = (function() {
         });
 
         $addButton.on('click', function() {
-            objectView.new('New Entity')
+            objectView.new('New Entity');
         })
     });
 })(jQuery);

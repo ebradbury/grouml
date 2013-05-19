@@ -107,6 +107,9 @@ GROUML = GROUML || {};
 
     v.UmlObject = Backbone.View.extend({
         className: 'uml-object uml-class',
+        attributes: {
+            style: 'position: absolute;',
+        },
         _nameView: null,
         _fieldsView: null,
         _addFieldView: null,
@@ -143,8 +146,10 @@ GROUML = GROUML || {};
                 model: model,
                 collection: collection
             });
+            var gridSize = GROUML.Constants.gridSize;
             this.objects.push(objectView);
-            this.$el.append(objectView.render().el);
+            
+            this.$el.append($(objectView.render().el).draggable({ grid: [gridSize, gridSize] }).resizable({ grid: [gridSize, gridSize] }));
         },
         new: function(name) {
             var m = new GROUML.Models.UmlObject({
