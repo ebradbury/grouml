@@ -3,6 +3,7 @@ GROUML = GROUML || {};
 GROUML.Constants = (function() {
     return {
         gridSize: 20,
+        types: ['int', 'float', 'boolean', 'char', 'text',],
     };
 })();
 
