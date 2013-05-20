@@ -12,7 +12,8 @@ GROUML = GROUML || {};
     m.UmlObjectField = Backbone.Model.extend({
         defaults: {
             Name: null,
-            Type: null
+            Type: null,
+            Options: {},
         }
     });
 

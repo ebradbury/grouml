@@ -59,7 +59,6 @@ div.uml-object ul.fields li {
 div.uml-object ul.fields li input.name {
     position: relative;
     float: left;
-    width: 50%;
     border: 0;
     padding: 0;
     margin: 0;
@@ -72,7 +71,6 @@ div.uml-object ul.fields li select.type {
     color: #36D986;
     background-color: #222;
     border: 1px solid #222;
-    width: 50%;
 }
 
 div.uml-object ul.fields li select.type option {
@@ -106,4 +104,41 @@ div.uml-object input.add-field {
     clear: both;
     margin-right: 0;
     margin-bottom: .1em;
+}
+
+/* Field Option Styles */
+div#field-options {
+    padding: 4px;
+    display: inline-block;
+    z-index: 2;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background-color: #ccc;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+div#field-options ul li.option input {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background-color: #dfdfdf;
+    color: #222;
+}
+
+div#field-options ul li.option input.key {
+    margin-right: 2px;
+}
+
+div#field-options div.add-field-option-wrapper {
+    clear: both;
+    text-align: center;
+}
+
+div#field-options input.add-field-option {
+    position: relative;
+    clear: both;
+    margin: 0 auto;
 }

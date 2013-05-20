@@ -5,6 +5,9 @@ GROUML = GROUML || {};
     v.UmlObjectFieldType = Backbone.View.extend({
         tagName: 'select',
         className: 'type',
+        attributes: {
+            dir: 'rtl',
+        },
         events: {
             'keydown': function(e) {
                 if (e.which === 13 || e.which === 27) {
@@ -13,8 +16,15 @@ GROUML = GROUML || {};
                     return false;
                 }
             },
+            'focus': function() {
+                $('#field-options').remove()
+                this._fieldOptionsView = new v.UmlObjectFieldOptions({model:this.model, _objectModel: this._objectModel, _fieldModel: this._fieldModel });
+                $('body').append(this._fieldOptionsView.render().el);
+            },
         },
-        initialize: function() {
+        initialize: function(opts) {
+            this._objectModel = opts._objectModel || null;
+            this._fieldModel = opts._fieldModel || null;
             this._template = _.template($('#type_options_template').html());
         },
         render: function() {
@@ -33,8 +43,69 @@ GROUML = GROUML || {};
         tagName: 'input',
         className: 'name',
         events: {
-            'input': function(){
+            'keyup': function(){
                 this.model.set('Name', this.$el.val());
+                this.$el.attr('size', this.$el.val().length);
+            },
+            'keydown': function(e) {
+                if (e.which === 13 || e.which === 27) {
+                    this.$el.blur();
+                    e.preventDefault();
+                    return false;
+                }
+            },
+            'click': function(e) {
+                this.$el.select();
+            },
+            'focus': function() {
+                $('#field-options').remove()
+                this._fieldOptionsView = new v.UmlObjectFieldOptions({model:this.model, _objectModel: this._objectModel, _fieldModel: this._fieldModel });
+                $('body').append(this._fieldOptionsView.render().el);
+            },
+        },
+        initialize: function(opts) {
+            this._objectModel = opts._objectModel || null;
+            this._fieldModel = opts._fieldModel || null;
+        },
+        render: function() {
+            this.$el.attr('value', this.model.get('Name')).html();
+            return this;
+        }
+    });
+
+    v.UmlObjectField = Backbone.View.extend({
+        tagName: 'li',
+        _name: null,
+        _type: null,
+        initialize: function(opts) {
+            this._objectModel = opts._objectModel || null;
+            this._name = new v.UmlObjectFieldName({model:this.model, _objectModel: this._objectModel, _fieldModel: this.model});
+            this._type = new v.UmlObjectFieldType({model:this.model, _objectModel: this._objectModel, _fieldModel: this.model});
+        },
+        render: function() {
+            this.$el.append(this._name.render().el);
+            this.$el.append(this._type.render().el);
+            return this;
+        }
+    });
+    
+    v.UmlObjectFieldOptionKey = Backbone.View.extend({
+        tagName: 'input',
+        className: 'key',
+        attributes: { value: 'foo' },
+        events: {
+            'focus': function() {
+                this._focusValues = { key: this.$el.val(), value: this.$el.next('input.value').val() };
+            },
+            'blur': function() {
+                this._blurValues = { key: this.$el.val() };
+                
+                if(this._blurValues.key != this._focusValues.key) {
+                    var opts = this.model.get('Options');
+                    delete opts[this._blurValues.key];
+                    opts[this._focusValues.key] = this._blurValues.value;
+                    this.model.set('Options', opts);
+                }
             },
             'keydown': function(e) {
                 if (e.which === 13 || e.which === 27) {
@@ -47,36 +118,136 @@ GROUML = GROUML || {};
                 this.$el.select();
             },
         },
-        render: function() {
-            this.$el.attr('value', this.model.get('Name')).html();
-            return this;
-        }
-    });
-
-    v.UmlObjectField = Backbone.View.extend({
-        tagName: 'li',
-        _name: null,
-        _type: null,
-        initialize: function() {
-            this._name = new v.UmlObjectFieldName({model:this.model});
-            this._type = new v.UmlObjectFieldType({model:this.model});
+        initialize: function(opts) {
+            this._key = opts._key || 'New Option';
         },
         render: function() {
-            this.$el.append(this._name.render().el);
-            this.$el.append(this._type.render().el);
+            this.$el.attr('value', this._key);
+            return this;
+        }
+    });
+    
+    v.UmlObjectFieldOptionValue = Backbone.View.extend({
+        tagName: 'input',
+        className: 'value',
+        attributes: { value: 'bar' },
+        events: {
+            'focus': function() {
+                this._focusValues = { key: this.$el.prev('input.key').val(), value: this.$el.val() };
+            },
+            'blur': function() {
+                this._blurValues = { value: this.$el.val() };
+                
+                if(this._blurValues.value != this._focusValues.value) {
+                    var opts = this.model.get('Options');
+                    opts[this._focusValues.key] = this._blurValues.value;
+                    this.model.set('Options', opts);
+                }
+            },
+            'keydown': function(e) {
+                if (e.which === 13 || e.which === 27) {
+                    this.$el.blur();
+                    e.preventDefault();
+                    return false;
+                }
+            },
+            'click': function(e) {
+                this.$el.select();
+            },
+        },
+        initialize: function(opts) {
+            this._key = opts._key || 'New Option';
+        },
+        render: function() {
+            this.$el.attr('value', this.model.get('Options')[this._key] || 'New Option');
+            return this;
+        }
+    });
+    
+    v.UmlObjectFieldOption = Backbone.View.extend({
+        tagName: 'li',
+        className: 'option',
+        initialize: function(opts) {
+            this._key = opts._key || 'New Option';
+            this._keyView = new v.UmlObjectFieldOptionKey({model:this.model, _key:this._key});
+            this._valueView = new v.UmlObjectFieldOptionValue({model:this.model, _key:this._key});
+        },
+        render: function() {
+            this.$el.append(this._keyView.render().el);
+            this.$el.append(this._valueView.render().el);
             return this;
         }
     });
 
+    v.UmlObjectFieldAddOption = Backbone.View.extend({
+        className: 'add-field-option-wrapper',
+        attributes: {
+            tabindex: -1,
+        },
+        events: {
+            'click input': function() {
+                this.trigger('field-option:add');
+            }
+        },
+        render: function() {
+            this.$el.html('<input type="image" tabindex="-1" src="img/glyphicons/glyphicons_190_circle_plus.png" />');
+            return this;
+        }
+    });
+    
+    v.UmlObjectFieldOptionsTitle = Backbone.View.extend({
+        tagName: 'p',
+        className: 'field-options-title',
+        initialize: function(opts) {
+            this._objectModel = opts._objectModel || null;
+            this._fieldModel = opts._fieldModel || null;
+            this._template = _.template($('#field_options_title_template').html());
+            this._objectModel.on('change:Name', this.render, this);
+            this._fieldModel.on('change:Name', this.render, this);
+        },
+        render: function() {
+            this.$el.html(this._template({objectName: this._objectModel.get('Name'), fieldName: this._fieldModel.get('Name') }));
+            return this;
+        },
+    });
+    
+    v.UmlObjectFieldOptions = Backbone.View.extend({
+        attributes: { id: 'field-options' },
+        initialize: function(opts) {
+            this._objectModel = opts._objectModel || null;
+            this._fieldModel = opts._fieldModel || null;
+            
+            this._addFieldOptionView = new v.UmlObjectFieldAddOption()
+            
+            this._addFieldOptionView.on('field-option:add', function() {
+                this.$el.find('ul').append(new v.UmlObjectFieldOption({model:this.model}).render().el);
+            }, this);
+        },
+        render: function() {
+            var title = new v.UmlObjectFieldOptionsTitle({model:this.model, _fieldModel: this._fieldModel, _objectModel: this._objectModel});
+            this.$el.html(title.render().el).append('<ul></ul>');
+            var ul = this.$el.find('ul');
+            for(o in this.model.get('Options')) {
+                ul.append(new v.UmlObjectFieldOption({model:this.model, _key:o}).render().el);
+            }
+            this.$el.append(this._addFieldOptionView.render().el);
+            return this;
+        }
+    });
+    
     v.UmlObjectFields = Backbone.View.extend({
         tagName: 'ul',
         className: 'fields',
-        initialize: function() {
+        initialize: function(opts) {
+            this._objectModel = opts._objectModel || null;
+            
+            var self = this;
+            
             this.collection.on('add', function(m, c, options) {
                 var isNew = options.isNew || false;
                 
                 if(isNew) {
-                    var newField = new v.UmlObjectField({model:m}).render();
+                    var newField = new v.UmlObjectField({model:m, _objectModel: self._objectModel}).render();
                     
                     this.$el.append(newField.el);
                     
@@ -91,7 +262,7 @@ GROUML = GROUML || {};
         render: function() {
             this.$el.html('');
             this.collection.each(function(m){
-                this.$el.append(new v.UmlObjectField({model:m}).render().el);
+                this.$el.append(new v.UmlObjectField({model:m, _objectModel: this._objectModel}).render().el);
             }, this);
             return this;
         }
@@ -120,8 +291,9 @@ GROUML = GROUML || {};
             this.model.on('change:Name', this.render, this);
         },
         events: {
-            'input': function(){
+            'keyup': function(){
                 this.model.set('Name', this.$el.val());
+                this.$el.attr('size', this.$el.val().length);
             },
             'keydown': function(e) {
                 if (e.which === 13 || e.which === 27) {
@@ -155,7 +327,7 @@ GROUML = GROUML || {};
         },
         initialize: function() {
             this._nameView = new v.UmlObjectName({model:this.model});
-            this._fieldsView = new v.UmlObjectFields({collection:this.collection});
+            this._fieldsView = new v.UmlObjectFields({collection:this.collection, _objectModel: this.model});
             this._addFieldView = new v.UmlObjectAddField();
 
             this._addFieldView.on('field:add', function() {

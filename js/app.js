@@ -46,12 +46,21 @@ GROUML.Generators = (function() {
                 Type: 'int'
             },
             {
-                Name: 'last_name',
-                Type: 'char'
+                Name: 'first_name',
+                Type: 'char',
+                Options: {
+                    'max_length': 25,
+                    'default': 'Elliot',
+                },
             },
             {
                 Name: 'last_name',
-                Type: 'char'
+                Type: 'char',
+                Options: {
+                    'max_length': 50,
+                    'default': 'Bradbury',
+                    'blank': true,
+                },
             },
             {
                 Name: 'age',
