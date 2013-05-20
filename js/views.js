@@ -190,12 +190,22 @@ GROUML = GROUML || {};
         add: function(model, collection) {
             var objectView = new v.UmlObject({
                 model: model,
-                collection: collection
+                collection: collection,
+                attributes: { style: 'position: absolute; left: -9999px; top: -9999px;' },
             });
             var gridSize = GROUML.Constants.gridSize;
             this.objects.push(objectView);
             
-            this.$el.append($(objectView.render().el).draggable({ grid: [gridSize, gridSize] }).resizable({ grid: [gridSize, gridSize] }));
+            var ovEl = objectView.render().el;
+            
+            this.$el.append($(ovEl).draggable({ grid: [gridSize, gridSize] }).resizable({ grid: [gridSize, gridSize] }));
+            
+            var elWidth = $(ovEl).outerWidth();
+            var elHeight = $(ovEl).outerHeight();
+            
+            var placement = GROUML.Utility.findWallSpaceForObject(elWidth, elHeight);
+            
+            $(ovEl).css({ 'left': placement.x + 'px', 'top': placement.y + 'px' });
         },
         new: function(name) {
             var m = new GROUML.Models.UmlObject({
