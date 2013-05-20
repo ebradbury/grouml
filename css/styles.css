@@ -5,6 +5,10 @@ html, body {
     font-family: 'Source Sans Pro', sans-serif;
 }
 
+select,option, textarea {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
 div#viewport {
     min-height: 100%;
 }
@@ -25,6 +29,7 @@ div.uml-object {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+    width: 120px;
 }
 
 div.uml-object p.name {
@@ -47,12 +52,21 @@ div.uml-object ul.fields li {
 div.uml-object ul.fields li span.name {
     position: relative;
     float: left;
+    width: 50%;
 }
 
-div.uml-object ul.fields li span.type {
+div.uml-object ul.fields li select.type {
     position: relative;
     float: right;
     color: #36D986;
+    background-color: #222;
+    border: 1px solid #222;
+    width: 50%;
+}
+
+div.uml-object ul.fields li select.type option {
+    color: #36D986;
+    background-color: #222;
 }
 
 div.uml-object div.add-field-wrapper {
