@@ -3,13 +3,25 @@ GROUML = GROUML || {};
 (function(v) {
 
     v.UmlObjectFieldType = Backbone.View.extend({
-        tagName: 'span',
+        tagName: 'select',
         className: 'type',
-        attributes: {
-            contentEditable: true,
+        events: {
+            'keydown': function(e) {
+                if (e.which === 13 || e.which === 27) {
+                    this.$el.blur();
+                    e.preventDefault();
+                    return false;
+                }
+            },
         },
         render: function() {
-            this.$el.html(this.model.get('Type'));
+            var type_options_html = _.template($('#type_options_template').html(), {
+                types: GROUML.Constants.types,
+                current: this.model.get('Type'),
+            });
+            
+            this.$el.html(type_options_html);
+            
             return this;
         }
     });
@@ -35,7 +47,10 @@ GROUML = GROUML || {};
                     e.preventDefault();
                     return false;
                 }
-            }
+            },
+            'focus': function(e) {
+                $(this.$el).selectText();
+            },
         },
         render: function() {
             this.$el.html(this.model.get('Name'));
@@ -62,7 +77,22 @@ GROUML = GROUML || {};
         tagName: 'ul',
         className: 'fields',
         initialize: function() {
-            this.collection.on('add', this.render, this);
+            this.collection.on('add', function(m, c, options) {
+                // FIXME - issue #2
+                var isNew = options.isNew || false;
+                
+                if(isNew) {
+                    var newField = new v.UmlObjectField({model:m}).render();
+                    
+                    this.$el.append(newField.el);
+                    
+                    newField.$el.find('span.name').get(0).focus();
+                    
+                    return this;
+                } else {
+                    this.render();
+                }
+            }, this);
         },
         render: function() {
             this.$el.html('');
@@ -73,7 +103,6 @@ GROUML = GROUML || {};
         }
     });
 
-    // This seems a little silly to basically define an input button using a view. Please advise.
     v.UmlObjectAddField = Backbone.View.extend({
         className: 'add-field-wrapper',
         events: {
@@ -108,7 +137,10 @@ GROUML = GROUML || {};
                     e.preventDefault();
                     return false;
                 }
-            }
+            },
+            'focus': function(e) {
+                $(this.$el).selectText();
+            },
         },
         initialize: function() {
             this.model.on('change:Name', this.render, this);
@@ -141,7 +173,7 @@ GROUML = GROUML || {};
                 this.collection.add({
                     Name: 'New Field',
                     Type: 'int'
-                });
+                }, {isNew: true});
             }, this);
         },
         render: function() {
