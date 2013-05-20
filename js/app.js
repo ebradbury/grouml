@@ -4,6 +4,8 @@ GROUML.Constants = (function() {
     return {
         gridSize: 20,
         types: ['int', 'float', 'boolean', 'char', 'text',],
+        defaultObjectX: 120,
+        defaultObjectY: 20,
     };
 })();
 
