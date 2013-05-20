@@ -14,8 +14,11 @@ GROUML = GROUML || {};
                 }
             },
         },
+        initialize: function() {
+            this._template = _.template($('#type_options_template').html());
+        },
         render: function() {
-            var type_options_html = _.template($('#type_options_template').html(), {
+            var type_options_html = this._template({
                 types: GROUML.Constants.types,
                 current: this.model.get('Type'),
             });
@@ -27,19 +30,11 @@ GROUML = GROUML || {};
     });
 
     v.UmlObjectFieldName = Backbone.View.extend({
-        tagName: 'span',
+        tagName: 'input',
         className: 'name',
-        attributes: {
-            contentEditable: true
-        },
         events: {
-            'click': function(e) {
-                this.$el.focus();
-                e.stopPropagation();
-                return false;
-            },
             'input': function(){
-                this.model.set('Name', this.$el.text());
+                this.model.set('Name', this.$el.val());
             },
             'keydown': function(e) {
                 if (e.which === 13 || e.which === 27) {
@@ -48,12 +43,12 @@ GROUML = GROUML || {};
                     return false;
                 }
             },
-            'focus': function(e) {
-                $(this.$el).selectText();
+            'click': function(e) {
+                this.$el.select();
             },
         },
         render: function() {
-            this.$el.html(this.model.get('Name'));
+            this.$el.attr('value', this.model.get('Name')).html();
             return this;
         }
     });
@@ -78,7 +73,6 @@ GROUML = GROUML || {};
         className: 'fields',
         initialize: function() {
             this.collection.on('add', function(m, c, options) {
-                // FIXME - issue #2
                 var isNew = options.isNew || false;
                 
                 if(isNew) {
@@ -86,7 +80,7 @@ GROUML = GROUML || {};
                     
                     this.$el.append(newField.el);
                     
-                    newField.$el.find('span.name').get(0).focus();
+                    newField.$el.find('input.name').select();
                     
                     return this;
                 } else {
@@ -105,31 +99,29 @@ GROUML = GROUML || {};
 
     v.UmlObjectAddField = Backbone.View.extend({
         className: 'add-field-wrapper',
+        attributes: {
+            tabindex: -1,
+        },
         events: {
             'click input': function() {
                 this.trigger('field:add');
             }
         },
         render: function() {
-            this.$el.html('<input type="image" src="img/glyphicons/glyphicons_190_circle_plus.png" />');
+            this.$el.html('<input type="image" tabindex="-1" src="img/glyphicons/glyphicons_190_circle_plus.png" />');
             return this;
         }
     });
     
     v.UmlObjectName = Backbone.View.extend({
-        tagName: 'p',
-        className: 'name',
-        attributes: {
-            contentEditable: true
+        tagName: 'input',
+        className: 'object-name',
+        initialize: function() {
+            this.model.on('change:Name', this.render, this);
         },
         events: {
-            'click': function(e) {
-                this.$el.focus();
-                e.stopPropagation();
-                return false;
-            },
             'input': function(){
-                this.model.set('Name', this.$el.text());
+                this.model.set('Name', this.$el.val());
             },
             'keydown': function(e) {
                 if (e.which === 13 || e.which === 27) {
@@ -138,15 +130,12 @@ GROUML = GROUML || {};
                     return false;
                 }
             },
-            'focus': function(e) {
-                $(this.$el).selectText();
+            'click': function(e) {
+                this.$el.select();
             },
         },
-        initialize: function() {
-            this.model.on('change:Name', this.render, this);
-        },
         render: function() {
-            this.$el.html(this.model.get('Name'));
+            this.$el.attr('value', this.model.get('Name')).html();
             return this;
         }
     });
