@@ -1,20 +1,21 @@
-GROUML = GROUML || {};
+var GROUML = GROUML || {};
 
 (function(m) {
 
-    m.UmlObject = Backbone.Model.extend({
-        defaults: {
-            Name: null,
-            Type: null // Type of diagram. e.g. Class Diagram
-        }
+    m.Board = StackMob.Model.extend({
+        schemaName : 'board'
     });
 
-    m.UmlObjectField = Backbone.Model.extend({
-        defaults: {
-            Name: null,
-            Type: null,
-            Options: {},
-        }
+    m.Object = StackMob.Model.extend({
+        schemaName : 'object'
+    });
+
+    m.Field = StackMob.Model.extend({
+        schemaName : 'field'
+    });
+
+    m.Option = StackMob.Model.extend({
+        schemaName : 'option'
     });
 
 })(GROUML.Models = GROUML.Models || {});
