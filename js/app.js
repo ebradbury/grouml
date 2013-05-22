@@ -89,6 +89,6 @@ GROUML.Generators = (function() {
 
         $addButton.on('click', function() {
             objectView.new('New Entity');
-        })
+        });
     });
 })(jQuery);

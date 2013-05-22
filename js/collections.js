@@ -2,13 +2,20 @@ GROUML = GROUML || {};
 
 (function(c) {
 
-    c.UmlObjects = Backbone.Collection.extend({
-        model: GROUML.Models.UmlObject
-    });
-    
-    c.UmlObjectFields = Backbone.Collection.extend({
-        model: GROUML.Models.UmlObjectField
+    c.Boards = StackMob.Collection.extend({
+        model: GROUML.Models.Board
     });
 
+    c.Objects = StackMob.Collection.extend({
+        model: GROUML.Models.Object
+    });
+    
+    c.Fields = StackMob.Collection.extend({
+        model: GROUML.Models.Field
+    });
+
+    c.Options = StackMob.Collection.extend({
+        model: GROUML.Models.Option
+    });
     
 })(GROUML.Collections = GROUML.Collections || {});

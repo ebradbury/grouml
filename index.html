@@ -23,16 +23,18 @@
             apiVersion : 0
         });
     </script>
-
     <script src="js/models.js"></script>
+    <script src="js/collections.js"></script>
+    <script src="js/queries.js"></script>
     <script src="js/routers.js"></script>
-    <script>
-        new GROUML.Routers.MainRouter();
-    </script>
+    <script src="js/views2.js"></script>
+    <script src="js/init.js"></script>
 </head>
 <body>
 
-<div id="viewport"></div>
+<div id="viewport">
+    <div id="wall"></div>
+</div>
 
 <div id="toolbar" class="ui-widget-header ui-corner-all">
   <button id="add-class-diagram">Class Diagram</button>
