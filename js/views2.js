@@ -3,7 +3,14 @@ var GROUML = GROUML || {};
 (function(v) {
 
     v.ObjectView = Backbone.View.extend({
-
+        className: 'uml-object uml-class',
+        initialize: function() {
+            this._template = _.template($('#tpl-object-view').html());
+        },
+        render: function() {
+            this.$el.append(this._template());
+            return this;
+        }
     });
 
     v.BoardView = Backbone.View.extend({
@@ -13,12 +20,16 @@ var GROUML = GROUML || {};
 
             var self = this;
             GROUML.Events.on('board:change', function(board_id) {
-                GROUML.Queries.GetObjects(board_id)
-                    .done(function(objects) {
-                        objects = objects || [];
-                        self.collection.reset(objects);
-                    });
+                self.changeBoard(board_id);
             });
+        },
+        changeBoard: function(board_id) {
+            var self = this;
+            GROUML.Queries.GetObjects(board_id)
+                .done(function(objects) {
+                    objects = objects || [];
+                    self.collection.reset(objects);
+                });
         },
         render: function() {
             this.collection.each(function(m) {

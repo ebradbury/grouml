@@ -4,15 +4,17 @@ var GROUML = GROUML || {};
 
     r.MainRouter = Backbone.Router.extend({
         _boardView: null,
+        _boardId: null,
         routes: {
             '': 'index',
             'board/:id': 'board',
             'board/:id/:field': 'board'
         },
         initialize: function() {
+            this._boardView = new GROUML.Views.BoardView({
+                el: '#wall'
+            });
             Backbone.history.start();
-
-            this._boardView = new GROUML.Views.BoardView();
         },
         index: function() {
             var obj = new GROUML.Models.Board();
@@ -26,7 +28,14 @@ var GROUML = GROUML || {};
             });
         },
         board: function(id, field) {
-            GROUML.Events.trigger('board:change', id);
+            if (this._boardId !== id) {
+                this._boardId = id;
+                GROUML.Events.trigger('board:change', id);
+            }
+
+            if (field) {
+                GROUML.Events.trigger('field:change', id);
+            }
         }
     });
 

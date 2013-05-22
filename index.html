@@ -26,8 +26,8 @@
     <script src="js/models.js"></script>
     <script src="js/collections.js"></script>
     <script src="js/queries.js"></script>
-    <script src="js/routers.js"></script>
     <script src="js/views2.js"></script>
+    <script src="js/routers.js"></script>
     <script src="js/init.js"></script>
 </head>
 <body>
@@ -50,6 +50,14 @@
 
 <script type="text/template" id="field_options_title_template">
 <p><%= objectName %>.<%= fieldName %> options</p>
+</script>
+
+<script type="text/template" id="tpl-object-view">
+<input class="object-name" value="Person">
+<ul class="fields"></ul>
+<div tabindex="-1" class="add-field-wrapper">
+    <input type="image" tabindex="-1" src="img/glyphicons/glyphicons_190_circle_plus.png">
+</div>
 </script>
 
 </html>
