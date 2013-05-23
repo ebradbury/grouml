@@ -222,6 +222,8 @@ GROUML = GROUML || {};
             this._addFieldOptionView.on('field-option:add', function() {
                 this.$el.find('ul').append(new v.UmlObjectFieldOption({model:this.model}).render().el);
             }, this);
+            
+            this._spinner = new Spinner({ lines: 10, length: 8, width: 4, radius: 8, color: '#999'});
         },
         render: function() {
             var title = new v.UmlObjectFieldOptionsTitle({model:this.model, _fieldModel: this._fieldModel, _objectModel: this._objectModel});
@@ -231,8 +233,18 @@ GROUML = GROUML || {};
                 ul.append(new v.UmlObjectFieldOption({model:this.model, _key:o}).render().el);
             }
             this.$el.append(this._addFieldOptionView.render().el);
+            
             return this;
-        }
+        },
+        loading: function(flag) {
+            var flag = flag || true;
+            
+            if(flag) {
+                this._spinner.spin(this.el);
+            } else {
+                this._spinner.stop();
+            }
+        },
     });
     
     v.UmlObjectFields = Backbone.View.extend({
@@ -307,7 +319,8 @@ GROUML = GROUML || {};
             },
         },
         render: function() {
-            this.$el.attr('value', this.model.get('Name')).html();
+            var name = this.model.get('Name');
+            this.$el.attr({ value: name, size: name.length }).html();
             return this;
         }
     });
@@ -336,13 +349,24 @@ GROUML = GROUML || {};
                     Type: 'int'
                 }, {isNew: true});
             }, this);
+            
+            this._spinner = new Spinner({ lines: 10, length: 8, width: 4, radius: 8, color: '#999'});
         },
         render: function() {
             this.$el.append(this._nameView.render().el);
             this.$el.append(this._fieldsView.render().el);
             this.$el.append(this._addFieldView.render().el);
             return this;
-        }
+        },
+        loading: function(flag) {
+            var flag = flag || true;
+            
+            if(flag) {
+                this._spinner.spin(this.el);
+            } else {
+                this._spinner.stop();
+            }
+        },
     });
 
     v.UmlObjects = Backbone.View.extend({
@@ -356,6 +380,8 @@ GROUML = GROUML || {};
             });
             var gridSize = GROUML.Constants.gridSize;
             this.objects.push(objectView);
+            
+            this.collection.add(model);
             
             var ovEl = objectView.render().el;
             
