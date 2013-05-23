@@ -19,7 +19,7 @@ GROUML = GROUML || {};
             'focus': function() {
                 $('#field-options').remove()
                 this._fieldOptionsView = new v.UmlObjectFieldOptions({model:this.model, _objectModel: this._objectModel, _fieldModel: this._fieldModel });
-                $('body').append(this._fieldOptionsView.render().el);
+                $('#wall-tab').append(this._fieldOptionsView.render().el);
             },
         },
         initialize: function(opts) {
@@ -60,7 +60,7 @@ GROUML = GROUML || {};
             'focus': function() {
                 $('#field-options').remove()
                 this._fieldOptionsView = new v.UmlObjectFieldOptions({model:this.model, _objectModel: this._objectModel, _fieldModel: this._fieldModel });
-                $('body').append(this._fieldOptionsView.render().el);
+                $('#wall-tab').append(this._fieldOptionsView.render().el);
             },
         },
         initialize: function(opts) {
