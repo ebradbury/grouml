@@ -6,6 +6,31 @@ var GROUML = GROUML || {};
         className: 'uml-object uml-class',
         initialize: function() {
             this._template = _.template($('#tpl-object-view').html());
+
+            var x = this.model.get('x'),
+                y = this.model.get('y');
+
+            if (!x && !y) {
+
+                var pos = GROUML.Utility.findWallSpaceForObject();
+            } else {
+                this.$el.css({top: y, left: x, position:'absolute'});
+            }
+        },
+        moveIntoPosition: function(is_first) {
+           var x = this.model.get('x'),
+               y = this.model.get('y');
+
+            if (!x && !y && !is_first) {
+                var w = this.$el.width(),
+                    h = this.$el.height();
+
+                var pos = GROUML.Utility.findWallSpaceForObject(w, h);
+                x = pos.x;
+                y = pos.y;
+            }
+
+            this.$el.css({top: y, left: x, position:'absolute'});
         },
         render: function() {
             this.$el.append(this._template());
@@ -32,8 +57,11 @@ var GROUML = GROUML || {};
                 });
         },
         render: function() {
+            var count = 0;
             this.collection.each(function(m) {
-                this.$el.append(new v.ObjectView({model:m}).render().el);
+                var objectView = new v.ObjectView({model:m});
+                this.$el.append(objectView.render().el);
+                objectView.moveIntoPosition(count++ === 0);
             }, this);
             return this;
         }
