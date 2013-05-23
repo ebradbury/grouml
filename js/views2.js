@@ -29,9 +29,19 @@ var GROUML = GROUML || {};
 
             this.$el.css({top: y, left: x, position:'absolute'});
 
-            var gridSize = GROUML.Constants.gridSize;
-            $(this.$el).draggable({ grid: [gridSize, gridSize] })
-                .resizable({ grid: [gridSize, gridSize] })
+            var model = this.model,
+                gridSize = GROUML.Constants.gridSize;
+            $(this.$el).draggable({
+                grid: [gridSize, gridSize],
+                stop: function() {
+                    var position = $(this).position();
+                    model.set({
+                        x: position.left,
+                        y: position.top
+                    })
+                    model.save();
+                }
+            }).resizable({ grid: [gridSize, gridSize] })
         },
         render: function() {
             this.$el.append(this._template(this.model.toJSON()));
