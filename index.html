@@ -13,6 +13,7 @@
     <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
 
     <script src="js/libs/jquery.infinitedrag.js"></script>
     <script src="js/libs/jquery.selecttext.js"></script>
@@ -23,13 +24,31 @@
     <script src="js/views.js"></script>
     <script src="js/app.js"></script>
     <script src="js/generators/django.js"></script>
+    
+    <style type='text/css'>@import url('http://getbarometer.s3.amazonaws.com/assets/barometer/css/barometer.css');</style>
+    <script src='http://getbarometer.s3.amazonaws.com/assets/barometer/javascripts/barometer.js' type='text/javascript'></script>
+    <script type="text/javascript" charset="utf-8">
+        BAROMETER.load('RrArrAKSednx5AztrsbrR');
+    </script>
 </head>
 <body>
 
-<div id="viewport"></div>
+<div id="tabs" class="tabs-bottom">
+    <ul>
+        <li class="wall"><a href="#wall-tab">Diagrams</a></li>
+        <li><a href="#code-tab">Code Generator</a></li>
+    </ul>
+    <div class="tabs-spacer"></div>
+    <div id="wall-tab">
+        <div id="viewport"></div>
 
-<div id="toolbar" class="ui-widget-header ui-corner-all">
-  <button id="add-class-diagram">Class Diagram</button>
+        <div id="toolbar" class="ui-widget-header ui-corner-all">
+        <button id="add-class-diagram">Class Diagram</button>
+        </div>
+    </div>
+    <div id="code-tab">
+        <p>Code up in here</p>
+    </div>
 </div>
 
 </body>
