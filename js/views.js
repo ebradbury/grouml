@@ -73,16 +73,43 @@ GROUML = GROUML || {};
         }
     });
 
+    v.FieldDeleteButton = Backbone.View.extend({
+        tagName: 'input',
+        className: 'field-delete-button',
+        attributes: {
+            type: 'image',
+            src: 'img/glyphicons/glyphicons_191_circle_minus.png',
+            alt: 'Delete Field',
+            title: 'Delete Field',
+        },
+        events: {
+            'click': function() {
+//                 alert('delete field');
+                this.model.destroy();
+                this._parentView.remove();
+            },
+        },
+        initialize: function(opts) {
+            this._parentView = opts.parentView || null;
+        },
+        render: function() {
+            this.$el.html();
+            return this;
+        },
+    });
+    
     v.UmlObjectField = Backbone.View.extend({
         tagName: 'li',
         _name: null,
         _type: null,
         initialize: function(opts) {
             this._objectModel = opts._objectModel || null;
+            this._deleteButton = new v.FieldDeleteButton({model:this.model, parentView: this});
             this._name = new v.UmlObjectFieldName({model:this.model, _objectModel: this._objectModel, _fieldModel: this.model});
             this._type = new v.UmlObjectFieldType({model:this.model, _objectModel: this._objectModel, _fieldModel: this.model});
         },
         render: function() {
+            this.$el.append(this._deleteButton.render().el);
             this.$el.append(this._name.render().el);
             this.$el.append(this._type.render().el);
             return this;
@@ -325,6 +352,31 @@ GROUML = GROUML || {};
         }
     });
 
+    v.ObjectDeleteButton = Backbone.View.extend({
+        tagName: 'input',
+        className: 'delete-button',
+        attributes: {
+            type: 'image',
+            src: 'img/glyphicons/glyphicons_192_circle_remove.png',
+            alt: 'Delete Object',
+            title: 'Delete Object',
+        },
+        events: {
+            'click': function() {
+//                 alert('delete field');
+                this.model.destroy();
+                this._parentView.remove();
+            },
+        },
+        initialize: function(opts) {
+            this._parentView = opts.parentView || null;
+        },
+        render: function() {
+            this.$el.html();
+            return this;
+        },
+    });
+    
     v.UmlObject = Backbone.View.extend({
         className: 'uml-object uml-class',
         attributes: {
@@ -340,6 +392,7 @@ GROUML = GROUML || {};
         },
         initialize: function() {
             this._nameView = new v.UmlObjectName({model:this.model});
+            this._deleteButton = new v.ObjectDeleteButton({model:this.model, parentView: this});
             this._fieldsView = new v.UmlObjectFields({collection:this.collection, _objectModel: this.model});
             this._addFieldView = new v.UmlObjectAddField();
 
@@ -354,6 +407,7 @@ GROUML = GROUML || {};
         },
         render: function() {
             this.$el.append(this._nameView.render().el);
+            this.$el.append(this._deleteButton.render().el);
             this.$el.append(this._fieldsView.render().el);
             this.$el.append(this._addFieldView.render().el);
             return this;

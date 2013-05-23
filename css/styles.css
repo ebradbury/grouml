@@ -54,14 +54,32 @@ div.uml-object input.object-name {
     background-color: #222;
 }
 
+div.uml-object input.delete-button {
+    position: relative;
+    float: right;
+    width: 20px;
+    height: 20px;
+    background-color: #222;
+}
+
 div.uml-object ul.fields {
     border-top: 1px solid #666;
     padding-top: 2px;
 }
 
+div.uml-object ul.fields li input.field-delete-button {
+    position: relative;
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    background-color: #222;
+}
+
 div.uml-object ul.fields li {
     position: relative;
     clear: both;
+    height: auto;
 }
 
 div.uml-object ul.fields li input.name {
