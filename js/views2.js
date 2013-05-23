@@ -2,6 +2,39 @@ var GROUML = GROUML || {};
 
 (function(v) {
 
+    v.FieldView = Backbone.View.extend({
+        tagName: 'li',
+        _template: null,
+        initialize: function() {
+            this._template = _.template($('#tpl-field-view').html());
+        },
+        render: function() {
+            this.$el.html(this._template(this.model.toJSON()));
+            return this;
+        }
+    });
+
+    v.FieldsView = Backbone.View.extend({
+        initialize: function(options) {
+            this.collection = new GROUML.Collections.Fields();
+            this.collection.on('reset', this.render, this);
+
+            var self = this;
+            GROUML.Queries.GetFields(options.object_id)
+                .done(function(objects) {
+                    objects = objects || [];
+                    self.collection.reset(objects);
+                });
+        },
+        render: function() {
+            this.collection.each(function(m) {
+                var fieldView = new v.FieldView({model:m});
+                this.$el.append(fieldView.render().el);
+            }, this);
+            return this;
+        }
+    });
+
     v.ObjectView = Backbone.View.extend({
         className: 'uml-object uml-class',
         initialize: function() {
@@ -38,13 +71,22 @@ var GROUML = GROUML || {};
                     model.set({
                         x: position.left,
                         y: position.top
-                    })
+                    });
                     model.save();
                 }
             }).resizable({ grid: [gridSize, gridSize] })
         },
         render: function() {
             this.$el.append(this._template(this.model.toJSON()));
+
+            var $fields = this.$el.find('.fields');
+
+            // this is not great.
+            new v.FieldsView({
+                el: $fields,
+                object_id: this.model.get('object_id')
+            }).render();
+
             return this;
         }
     });
