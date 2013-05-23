@@ -7,6 +7,13 @@ var GROUML = GROUML || {};
         initialize: function() {
             this._template = _.template($('#tpl-object-view').html());
         },
+        events: {
+            'change .object-name': function(e) {
+                var val = $(e.target).val();
+                this.model.set('name', val);
+                this.model.save();
+            }
+        },
         setPositionAndDraggable: function(is_first) {
            var x = this.model.get('x'),
                y = this.model.get('y');
@@ -27,7 +34,7 @@ var GROUML = GROUML || {};
                 .resizable({ grid: [gridSize, gridSize] })
         },
         render: function() {
-            this.$el.append(this._template());
+            this.$el.append(this._template(this.model.toJSON()));
             return this;
         }
     });
