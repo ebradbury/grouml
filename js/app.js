@@ -30,7 +30,35 @@ GROUML.Generators = (function() {
 
 (function($){
     $(function() {
-        var objectView = new GROUML.Views.UmlObjects();
+        var umlObjects = new GROUML.Collections.UmlObjects();
+        var objectView = new GROUML.Views.UmlObjects({collection: umlObjects});
+        
+        $('#tabs').tabs({
+            heightStyle: 'fill',
+            activate: function(event, ui) {
+                if(ui.newPanel.attr('id') == 'code-tab') {
+                    var djangoGenerator = GROUML.Generators.getGenerator('django');
+                    ui.newPanel.html('<pre>');
+                    
+                    console.log(umlObjects.collection);
+                    
+                    umlObjects.each(function(umlObject) {
+                        ui.newPanel.append(djangoGenerator.generate({model: umlObject.toJSON(), fields: umlObject.collection}) + '\n\n');
+                    }, this);
+                    
+                    ui.newPanel.append('</pre>');
+                }
+            },
+        });
+        
+        // fix the classes
+        $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *" )
+        .removeClass( "ui-corner-all ui-corner-top" )
+        .addClass( "ui-corner-bottom" );
+    
+        // move the nav to the bottom
+        $( ".tabs-bottom .ui-tabs-nav" ).appendTo( ".tabs-bottom" );
+        
         $('#viewport').append(objectView.render().el);
 
         var gridSize = GROUML.Constants.gridSize;
