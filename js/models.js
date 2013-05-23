@@ -49,7 +49,7 @@ var GROUML = GROUML || {};
 
     m.Field = StackMob.Model.extend({
         schemaName : 'field',
-        createOption: function(callback, context) {
+        createOption: function() {
             var d = new $.Deferred();
             var self = this;
             var obj = new m.Option({
@@ -57,10 +57,10 @@ var GROUML = GROUML || {};
                 type: 'value'
             });
             obj.create({
-                success: function(m) {
-                    self.addRelationship('options', m, {
+                success: function(z) {
+                    self.appendAndSave('options', [z.get('option_id')], {
                         success: function() {
-                            d.resolve(m);
+                            d.resolve(obj);
                         }
                     });
                 }

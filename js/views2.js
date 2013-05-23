@@ -2,6 +2,82 @@ var GROUML = GROUML || {};
 
 (function(v) {
 
+    v.OptionView = Backbone.View.extend({
+        tagName: 'li',
+        className: 'option',
+        _template: null,
+        events: {
+            'change .key': function(e) {
+                var val = $(e.target).val();
+                this.model.set('name', val);
+                this.model.save();
+            },
+            'change .value': function(e) {
+                var val = $(e.target).val();
+                this.model.set('value', val);
+                this.model.save();
+            }
+        },
+        initialize: function() {
+            this._template = _.template($('#tpl-option-view').html());
+        },
+        render: function() {
+            this.$el.html(this._template(this.model.toJSON()));
+            return this;
+        }
+    });
+
+    v.OptionsView = Backbone.View.extend({
+        id: 'field-options',
+        _fieldId: null,
+        events: {
+            'click .add-field-option-wrapper': function() {
+                var self = this;
+                var field = GROUML.Models.Field({
+                    field_id: this._fieldId
+                });
+
+                field.fetch().done(function(m) {
+                    m.createOption()
+                        .done(function(m) {
+                            var $options = this.$el.find('ul');
+                            $options.append(new v.OptionView({model:m}).render().el);
+                        });
+                });
+            }
+        },
+        initialize: function() {
+            this.collection = new GROUML.Collections.Options();
+            this.collection.on('reset', this.render, this);
+
+            this._template = _.template($('#tpl-options-view').html());
+
+            var self = this;
+            GROUML.Events.on('field:change', function(field_id) {
+                self.changeField(field_id);
+            });
+        },
+        changeField: function(field_id) {
+            this._fieldId = field_id;
+
+            var self = this;
+            GROUML.Queries.GetOptions(field_id)
+                .done(function(options) {
+                    options = options || [];
+                    self.collection.reset(options);
+                });
+        },
+        render: function() {
+            this.$el.html(this._template(this.model.toJSON()));
+
+            var $options = this.$el.find('ul');
+            this.collection.each(function(m){
+                $options.append(new v.OptionView({model:m}).render().el);
+            }, this);
+            return this;
+        }
+    });
+
     v.FieldView = Backbone.View.extend({
         tagName: 'li',
         _template: null,
