@@ -5,11 +5,27 @@ var GROUML = GROUML || {};
     v.FieldView = Backbone.View.extend({
         tagName: 'li',
         _template: null,
+        events: {
+            'change input.name': function(e) {
+                var val = $(e.target).val();
+                this.model.set('name', val);
+                this.model.save();
+            },
+            'change select.type': function(e) {
+                var val = $(e.target).val();
+                this.model.set('type', val);
+                this.model.save();
+            }
+        },
         initialize: function() {
             this._template = _.template($('#tpl-field-view').html());
         },
         render: function() {
             this.$el.html(this._template(this.model.toJSON()));
+
+            var $type = this.$el.find('.type');
+            $type.val(this.model.get('type'));
+
             return this;
         }
     });
