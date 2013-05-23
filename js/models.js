@@ -12,10 +12,10 @@ var GROUML = GROUML || {};
                 type: 'Class'
             });
             obj.create({
-                success: function(m) {
-                    self.addRelationship('objects', m, {
+                success: function(z) {
+                    self.appendAndSave('objects', [z.get('object_id')], {
                         success: function() {
-                            d.resolve(m);
+                            d.resolve(obj);
                         }
                     });
                 }
