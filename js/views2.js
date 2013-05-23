@@ -31,6 +31,8 @@ var GROUML = GROUML || {};
     });
 
     v.FieldsView = Backbone.View.extend({
+        tagName: 'ul',
+        className: 'fields',
         initialize: function(options) {
             this.collection = new GROUML.Collections.Fields();
             this.collection.on('reset', this.render, this);
@@ -42,6 +44,10 @@ var GROUML = GROUML || {};
                     self.collection.reset(objects);
                 });
         },
+        addNew: function(m) {
+            var fieldView = new v.FieldView({model:m});
+            this.$el.append(fieldView.render().el);
+        },
         render: function() {
             this.collection.each(function(m) {
                 var fieldView = new v.FieldView({model:m});
@@ -52,15 +58,26 @@ var GROUML = GROUML || {};
     });
 
     v.ObjectView = Backbone.View.extend({
+        _fieldsView: null,
         className: 'uml-object uml-class',
         initialize: function() {
             this._template = _.template($('#tpl-object-view').html());
+            this._fieldsView = new v.FieldsView({
+                object_id: this.model.get('object_id')
+            });
         },
         events: {
             'change .object-name': function(e) {
                 var val = $(e.target).val();
                 this.model.set('name', val);
                 this.model.save();
+            },
+            'click .add-field-wrapper': function() {
+                var self = this;
+                this.model.createField()
+                .done(function(m) {
+                    self._fieldsView.addNew(m);
+                });
             }
         },
         setPositionAndDraggable: function(is_first) {
@@ -95,13 +112,9 @@ var GROUML = GROUML || {};
         render: function() {
             this.$el.append(this._template(this.model.toJSON()));
 
-            var $fields = this.$el.find('.fields');
+            var $fields = this.$el.find('.field-wrapper');
 
-            // this is not great.
-            new v.FieldsView({
-                el: $fields,
-                object_id: this.model.get('object_id')
-            }).render();
+            $fields.append(this._fieldsView.render().el);
 
             return this;
         }

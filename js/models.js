@@ -26,18 +26,19 @@ var GROUML = GROUML || {};
 
     m.Object = StackMob.Model.extend({
         schemaName : 'object',
-        createField: function(callback, context) {
+        createField: function() {
             var d = new $.Deferred();
-            var self = this;
             var obj = new m.Field({
                 name: 'New Field',
                 type: 'int'
             });
+
+            var self = this;
             obj.create({
-                success: function(m) {
-                    self.addRelationship('fields', m, {
+                success: function(z) {
+                    self.appendAndSave('fields', [z.get('field_id')], {
                         success: function() {
-                            d.resolve(m);
+                            d.resolve(obj);
                         }
                     });
                 }
