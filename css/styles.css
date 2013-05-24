@@ -10,6 +10,12 @@ select, option, textarea, input {
     color: #fff;
 }
 
+#tabs { margin: 0; padding: 0; border: 0;}
+/* div#tabs .tabs-spacer { float: left; min-height: 100%; display: inline-block; padding: 0; margin: 0; } */
+div#tabs .ui-tabs-panel { padding: 0; margin: 0; }
+div#tabs div#board-tab { overflow: hidden !important; }
+/* div#tabs ul.ui-tabs-nav { background: 0; background-color: #222; border: 0; } */
+
 div#viewport {
     min-height: 100%;
 }
