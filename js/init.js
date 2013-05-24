@@ -5,6 +5,13 @@ var GROUML = GROUML || {};
     GROUML.Events = _.extend({}, Backbone.Events);
 
     $(function() {
+        $('#tabs').tabs({
+            heightStyle: 'fill',
+            activate: function(event, ui) {},
+        }).removeClass('ui-corner-all');;
+        
+        $('#tabs ul.ui-tabs-nav').removeClass('ui-corner-all');
+        
         $.infinitedrag('#board', {}, {
             width: 100,
             height: 100,
