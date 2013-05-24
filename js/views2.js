@@ -161,8 +161,6 @@ var GROUML = GROUML || {};
         },
         events: {
             'click .delete-object': function(e) {
-                alert("would delete object if authed");
-                
                 var self = this;
                 this.model.destroy({
                     success: function(model) {
