@@ -1,387 +1,304 @@
-GROUML = GROUML || {};
+var GROUML = GROUML || {};
 
 (function(v) {
 
-    v.UmlObjectFieldType = Backbone.View.extend({
-        tagName: 'select',
-        className: 'type',
-        attributes: {
-            dir: 'rtl',
-        },
-        events: {
-            'keydown': function(e) {
-                if (e.which === 13 || e.which === 27) {
-                    this.$el.blur();
-                    e.preventDefault();
-                    return false;
-                }
-            },
-            'focus': function() {
-                $('#field-options').remove()
-                this._fieldOptionsView = new v.UmlObjectFieldOptions({model:this.model, _objectModel: this._objectModel, _fieldModel: this._fieldModel });
-                $('body').append(this._fieldOptionsView.render().el);
-            },
-        },
-        initialize: function(opts) {
-            this._objectModel = opts._objectModel || null;
-            this._fieldModel = opts._fieldModel || null;
-            this._template = _.template($('#type_options_template').html());
-        },
-        render: function() {
-            var type_options_html = this._template({
-                types: GROUML.Constants.types,
-                current: this.model.get('Type'),
-            });
-            
-            this.$el.html(type_options_html);
-            
-            return this;
-        }
-    });
-
-    v.UmlObjectFieldName = Backbone.View.extend({
-        tagName: 'input',
-        className: 'name',
-        events: {
-            'keyup': function(){
-                this.model.set('Name', this.$el.val());
-                this.$el.attr('size', this.$el.val().length);
-            },
-            'keydown': function(e) {
-                if (e.which === 13 || e.which === 27) {
-                    this.$el.blur();
-                    e.preventDefault();
-                    return false;
-                }
-            },
-            'click': function(e) {
-                this.$el.select();
-            },
-            'focus': function() {
-                $('#field-options').remove()
-                this._fieldOptionsView = new v.UmlObjectFieldOptions({model:this.model, _objectModel: this._objectModel, _fieldModel: this._fieldModel });
-                $('body').append(this._fieldOptionsView.render().el);
-            },
-        },
-        initialize: function(opts) {
-            this._objectModel = opts._objectModel || null;
-            this._fieldModel = opts._fieldModel || null;
-        },
-        render: function() {
-            this.$el.attr('value', this.model.get('Name')).html();
-            return this;
-        }
-    });
-
-    v.UmlObjectField = Backbone.View.extend({
-        tagName: 'li',
-        _name: null,
-        _type: null,
-        initialize: function(opts) {
-            this._objectModel = opts._objectModel || null;
-            this._name = new v.UmlObjectFieldName({model:this.model, _objectModel: this._objectModel, _fieldModel: this.model});
-            this._type = new v.UmlObjectFieldType({model:this.model, _objectModel: this._objectModel, _fieldModel: this.model});
-        },
-        render: function() {
-            this.$el.append(this._name.render().el);
-            this.$el.append(this._type.render().el);
-            return this;
-        }
-    });
-    
-    v.UmlObjectFieldOptionKey = Backbone.View.extend({
-        tagName: 'input',
-        className: 'key',
-        attributes: { value: 'foo' },
-        events: {
-            'focus': function() {
-                this._focusValues = { key: this.$el.val(), value: this.$el.next('input.value').val() };
-            },
-            'blur': function() {
-                this._blurValues = { key: this.$el.val() };
-                
-                if(this._blurValues.key != this._focusValues.key) {
-                    var opts = this.model.get('Options');
-                    delete opts[this._blurValues.key];
-                    opts[this._focusValues.key] = this._blurValues.value;
-                    this.model.set('Options', opts);
-                }
-            },
-            'keydown': function(e) {
-                if (e.which === 13 || e.which === 27) {
-                    this.$el.blur();
-                    e.preventDefault();
-                    return false;
-                }
-            },
-            'click': function(e) {
-                this.$el.select();
-            },
-        },
-        initialize: function(opts) {
-            this._key = opts._key || 'New Option';
-        },
-        render: function() {
-            this.$el.attr('value', this._key);
-            return this;
-        }
-    });
-    
-    v.UmlObjectFieldOptionValue = Backbone.View.extend({
-        tagName: 'input',
-        className: 'value',
-        attributes: { value: 'bar' },
-        events: {
-            'focus': function() {
-                this._focusValues = { key: this.$el.prev('input.key').val(), value: this.$el.val() };
-            },
-            'blur': function() {
-                this._blurValues = { value: this.$el.val() };
-                
-                if(this._blurValues.value != this._focusValues.value) {
-                    var opts = this.model.get('Options');
-                    opts[this._focusValues.key] = this._blurValues.value;
-                    this.model.set('Options', opts);
-                }
-            },
-            'keydown': function(e) {
-                if (e.which === 13 || e.which === 27) {
-                    this.$el.blur();
-                    e.preventDefault();
-                    return false;
-                }
-            },
-            'click': function(e) {
-                this.$el.select();
-            },
-        },
-        initialize: function(opts) {
-            this._key = opts._key || 'New Option';
-        },
-        render: function() {
-            this.$el.attr('value', this.model.get('Options')[this._key] || 'New Option');
-            return this;
-        }
-    });
-    
-    v.UmlObjectFieldOption = Backbone.View.extend({
+    v.OptionView = Backbone.View.extend({
         tagName: 'li',
         className: 'option',
-        initialize: function(opts) {
-            this._key = opts._key || 'New Option';
-            this._keyView = new v.UmlObjectFieldOptionKey({model:this.model, _key:this._key});
-            this._valueView = new v.UmlObjectFieldOptionValue({model:this.model, _key:this._key});
+        _template: null,
+        events: {
+            'change .key': function(e) {
+                var val = $(e.target).val();
+                this.model.set('name', val);
+                this.model.save();
+            },
+            'change .value': function(e) {
+                var val = $(e.target).val();
+                this.model.set('value', val);
+                this.model.save();
+            }
+        },
+        initialize: function() {
+            this._template = _.template($('#tpl-option-view').html());
         },
         render: function() {
-            this.$el.append(this._keyView.render().el);
-            this.$el.append(this._valueView.render().el);
+            this.$el.html(this._template(this.model.toJSON()));
             return this;
         }
     });
 
-    v.UmlObjectFieldAddOption = Backbone.View.extend({
-        className: 'add-field-option-wrapper',
-        attributes: {
-            tabindex: -1,
-        },
+    v.OptionsView = Backbone.View.extend({
+        _fieldId: null,
         events: {
-            'click input': function() {
-                this.trigger('field-option:add');
+            'click .add-field-option-wrapper': function() {
+                var self = this;
+                var field = new GROUML.Models.Field({
+                    field_id: this._fieldId
+                });
+
+                field.fetch({
+                    success: function(m) {
+                        m.createOption()
+                        .done(function(m) {
+                            var $options = self.$el.find('ul');
+                            $options.append(new v.OptionView({model:m}).render().el);
+                        });
+                    }
+                });
             }
         },
-        render: function() {
-            this.$el.html('<input type="image" tabindex="-1" src="img/glyphicons/glyphicons_190_circle_plus.png" />');
-            return this;
-        }
-    });
-    
-    v.UmlObjectFieldOptionsTitle = Backbone.View.extend({
-        tagName: 'p',
-        className: 'field-options-title',
-        initialize: function(opts) {
-            this._objectModel = opts._objectModel || null;
-            this._fieldModel = opts._fieldModel || null;
-            this._template = _.template($('#field_options_title_template').html());
-            this._objectModel.on('change:Name', this.render, this);
-            this._fieldModel.on('change:Name', this.render, this);
+        initialize: function() {
+            this.collection = new GROUML.Collections.Options();
+            this.collection.on('reset', this.render, this);
+
+            this._template = _.template($('#tpl-options-view').html());
+
+            var self = this;
+            GROUML.Events.on('field:change', function(field_id) {
+                self.changeField(field_id);
+            });
+        },
+        changeField: function(field_id) {
+            this._fieldId = field_id;
+
+            var self = this;
+            GROUML.Queries.GetOptions(field_id)
+                .done(function(options) {
+                    options = options || [];
+                    self.collection.reset(options);
+                });
         },
         render: function() {
-            this.$el.html(this._template({objectName: this._objectModel.get('Name'), fieldName: this._fieldModel.get('Name') }));
-            return this;
-        },
-    });
-    
-    v.UmlObjectFieldOptions = Backbone.View.extend({
-        attributes: { id: 'field-options' },
-        initialize: function(opts) {
-            this._objectModel = opts._objectModel || null;
-            this._fieldModel = opts._fieldModel || null;
-            
-            this._addFieldOptionView = new v.UmlObjectFieldAddOption()
-            
-            this._addFieldOptionView.on('field-option:add', function() {
-                this.$el.find('ul').append(new v.UmlObjectFieldOption({model:this.model}).render().el);
+            this.$el.html(this._template());
+
+            var $options = this.$el.find('ul');
+            this.collection.each(function(m){
+                $options.append(new v.OptionView({model:m}).render().el);
             }, this);
-        },
-        render: function() {
-            var title = new v.UmlObjectFieldOptionsTitle({model:this.model, _fieldModel: this._fieldModel, _objectModel: this._objectModel});
-            this.$el.html(title.render().el).append('<ul></ul>');
-            var ul = this.$el.find('ul');
-            for(o in this.model.get('Options')) {
-                ul.append(new v.UmlObjectFieldOption({model:this.model, _key:o}).render().el);
-            }
-            this.$el.append(this._addFieldOptionView.render().el);
             return this;
         }
     });
     
-    v.UmlObjectFields = Backbone.View.extend({
+    v.FieldView = Backbone.View.extend({
+        tagName: 'li',
+        _template: null,
+        events: {
+            'click input.delete-field': function(e) {
+                var self = this;
+                this.model.destroy({
+                    success: function(model) {
+                        self.remove();
+                    },
+                    error: function(model, response) {
+                        console.debug(response);
+                    }
+                });
+            },
+            'change input.name': function(e) {
+                var val = $(e.target).val();
+                this.model.set('name', val);
+                this.model.save();
+            },
+            'change select.type': function(e) {
+                var val = $(e.target).val();
+                this.model.set('type', val);
+                this.model.save();
+            },
+            'click': function() {
+                GROUML.Events.trigger('field:change', this.model.get('field_id'));
+            }
+        },
+        initialize: function() {
+            this._template = _.template($('#tpl-field-view').html());
+        },
+        render: function() {
+            this.$el.html(this._template(this.model.toJSON()));
+
+            var $type = this.$el.find('.type');
+            $type.val(this.model.get('type'));
+
+            return this;
+        }
+    });
+
+    v.FieldsView = Backbone.View.extend({
         tagName: 'ul',
         className: 'fields',
-        initialize: function(opts) {
-            this._objectModel = opts._objectModel || null;
-            
+        initialize: function(options) {
+            this.collection = new GROUML.Collections.Fields();
+            this.collection.on('reset', this.render, this);
+
             var self = this;
-            
-            this.collection.on('add', function(m, c, options) {
-                var isNew = options.isNew || false;
-                
-                if(isNew) {
-                    var newField = new v.UmlObjectField({model:m, _objectModel: self._objectModel}).render();
-                    
-                    this.$el.append(newField.el);
-                    
-                    newField.$el.find('input.name').select();
-                    
-                    return this;
-                } else {
-                    this.render();
-                }
-            }, this);
+            GROUML.Queries.GetFields(options.object_id)
+                .done(function(objects) {
+                    objects = objects || [];
+                    self.collection.reset(objects);
+                });
+        },
+        addNew: function(m) {
+            var fieldView = new v.FieldView({model:m});
+            this.$el.append(fieldView.render().el);
         },
         render: function() {
-            this.$el.html('');
-            this.collection.each(function(m){
-                this.$el.append(new v.UmlObjectField({model:m, _objectModel: this._objectModel}).render().el);
+            this.collection.each(function(m) {
+                var fieldView = new v.FieldView({model:m});
+                this.$el.append(fieldView.render().el);
             }, this);
             return this;
         }
     });
 
-    v.UmlObjectAddField = Backbone.View.extend({
-        className: 'add-field-wrapper',
-        attributes: {
-            tabindex: -1,
+    v.ObjectView = Backbone.View.extend({
+        _fieldsView: null,
+        className: 'uml-object uml-class',
+        initialize: function() {
+            this._template = _.template($('#tpl-object-view').html());
+            this._fieldsView = new v.FieldsView({
+                object_id: this.model.get('object_id')
+            });
+            
+            this._spinner = new Spinner({ lines: 10, length: 8, width: 4, radius: 8, color: '#999'});
         },
         events: {
-            'click input': function() {
-                this.trigger('field:add');
+            'click .delete-object': function(e) {
+                var self = this;
+                this.model.destroy({
+                    success: function(model) {
+                        self.remove();
+                    },
+                    error: function(model, response) {
+                        console.debug(response);
+                    }
+                });
+            },
+            'change .object-name': function(e) {
+                var val = $(e.target).val();
+                this.model.set('name', val);
+                this.model.save();
+            },
+            'click .add-field-wrapper': function() {
+                this.loading(true);
+                var self = this;
+                this.model.createField()
+                .done(function(m) {
+                    self._fieldsView.addNew(m);
+                    self.loading(false);
+                });
+            }
+        },
+        setPositionAndDraggable: function(is_first) {
+           var x = this.model.get('x'),
+               y = this.model.get('y');
+
+            if (!x && !y && !is_first) {
+                var w = this.$el.width(),
+                    h = this.$el.height();
+
+                var pos = GROUML.Utility.findWallSpaceForObject(w, h);
+                x = pos.x;
+                y = pos.y;
+            }
+
+            this.$el.css({top: y, left: x, position:'absolute'});
+
+            var model = this.model,
+                gridSize = GROUML.Constants.gridSize;
+            $(this.$el).draggable({
+                grid: [gridSize, gridSize],
+                stop: function() {
+                    var position = $(this).position();
+                    
+                    // double bitwise not truncates floats
+                    model.set({
+                        x: ~~position.left,
+                        y: ~~position.top
+                    });
+                    model.save();
+                }
+            }).resizable({ grid: [gridSize, gridSize] })
+        },
+        loading: function(flag) {
+            if(flag) {
+                this._spinner.spin(this.el);
+            } else {
+                this._spinner.stop();
             }
         },
         render: function() {
-            this.$el.html('<input type="image" tabindex="-1" src="img/glyphicons/glyphicons_190_circle_plus.png" />');
+            this.$el.append(this._template(this.model.toJSON()));
+
+            var $fields = this.$el.find('.field-wrapper');
+
+            $fields.append(this._fieldsView.render().el);
+
+            return this;
+        }
+    });
+
+    v.BoardView = Backbone.View.extend({
+        initialize: function() {
+            this.collection = new GROUML.Collections.Objects();
+            this.collection.on('reset', this.render, this);
+            
+            var self = this;
+            GROUML.Events.on('board:change', function(board) {
+                self.changeBoard(board);
+            });
+            
+            GROUML.Events.on('object:add', function(created) {
+                self.collection.add(created);
+                var objectView = new v.ObjectView({model:created});
+                self.$el.append(objectView.render().el);
+                objectView.setPositionAndDraggable();
+            });
+        },
+        changeBoard: function(board) {
+            var self = this;
+            GROUML.Queries.GetObjects(board.get('board_id'))
+                .done(function(objects) {
+                    objects = objects || [];
+                    self.collection.reset(objects);
+                });
+        },
+        render: function() {
+            this.collection.each(function(m) {
+                var objectView = new v.ObjectView({model:m});
+                this.$el.append(objectView.render().el);
+                objectView.setPositionAndDraggable();
+            }, this);
             return this;
         }
     });
     
-    v.UmlObjectName = Backbone.View.extend({
-        tagName: 'input',
-        className: 'object-name',
-        initialize: function() {
-            this.model.on('change:Name', this.render, this);
-        },
+    v.ToolbarView = Backbone.View.extend({
         events: {
-            'keyup': function(){
-                this.model.set('Name', this.$el.val());
-                this.$el.attr('size', this.$el.val().length);
+            'click #add-object': function() {
+                this._board.createObject().done(function(m) {
+                        GROUML.Events.trigger('object:add', m);
+                });
             },
-            'keydown': function(e) {
-                if (e.which === 13 || e.which === 27) {
-                    this.$el.blur();
-                    e.preventDefault();
-                    return false;
-                }
-            },
-            'click': function(e) {
-                this.$el.select();
-            },
+        },
+        initialize: function() {
+            this._template = _.template($('#tpl-toolbar-view').html());
+            
+            var self = this;
+            GROUML.Events.on('board:change', function(board) {
+                self._board = board;
+            });
         },
         render: function() {
-            this.$el.attr('value', this.model.get('Name')).html();
+            this.$el.append(this._template());
+            
+            this.$el.find('#add-object').button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-plusthick'
+                }
+            });
+            
             return this;
         }
     });
-
-    v.UmlObject = Backbone.View.extend({
-        className: 'uml-object uml-class',
-        attributes: {
-            style: 'position: absolute;',
-        },
-        _nameView: null,
-        _fieldsView: null,
-        _addFieldView: null,
-        events: {
-            'click': function(e) {
-                this.$el.find('[contentEditable]').blur();
-            }
-        },
-        initialize: function() {
-            this._nameView = new v.UmlObjectName({model:this.model});
-            this._fieldsView = new v.UmlObjectFields({collection:this.collection, _objectModel: this.model});
-            this._addFieldView = new v.UmlObjectAddField();
-
-            this._addFieldView.on('field:add', function() {
-                this.collection.add({
-                    Name: 'New Field',
-                    Type: 'int'
-                }, {isNew: true});
-            }, this);
-        },
-        render: function() {
-            this.$el.append(this._nameView.render().el);
-            this.$el.append(this._fieldsView.render().el);
-            this.$el.append(this._addFieldView.render().el);
-            return this;
-        }
-    });
-
-    v.UmlObjects = Backbone.View.extend({
-        id: 'wall',
-        objects: [],
-        add: function(model, collection) {
-            var objectView = new v.UmlObject({
-                model: model,
-                collection: collection,
-                attributes: { style: 'position: absolute; left: -9999px; top: -9999px;' },
-            });
-            var gridSize = GROUML.Constants.gridSize;
-            this.objects.push(objectView);
             
-            var ovEl = objectView.render().el;
-            
-            this.$el.append($(ovEl).draggable({ grid: [gridSize, gridSize] }).resizable({ grid: [gridSize, gridSize] }));
-            
-            var elWidth = $(ovEl).outerWidth();
-            var elHeight = $(ovEl).outerHeight();
-            
-            var placement = GROUML.Utility.findWallSpaceForObject(elWidth, elHeight);
-            
-            $(ovEl).css({ 'left': placement.x + 'px', 'top': placement.y + 'px' });
-        },
-        new: function(name) {
-            var m = new GROUML.Models.UmlObject({
-                Name: name
-            });
-
-            var c = new GROUML.Collections.UmlObjectFields([
-                {
-                    Name: 'id',
-                    Type: 'int'
-                }
-            ]);
-
-            this.add(m, c);
-        }
-    });
 
 })(GROUML.Views = GROUML.Views || {});
