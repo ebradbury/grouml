@@ -34,11 +34,7 @@
 <body>
 
 <div id="viewport">
-    <div id="wall"></div>
-</div>
-
-<div id="toolbar" class="ui-widget-header ui-corner-all">
-  <button id="add-class-diagram">Class Diagram</button>
+    <div id="board"></div>
 </div>
 
 </body>
@@ -51,6 +47,12 @@
 
 <script type="text/template" id="field_options_title_template">
 <p><%= objectName %>.<%= fieldName %> options</p>
+</script>
+
+<script type="text/template" id="tpl-toolbar-view">
+<div id="toolbar" class="ui-widget-header ui-corner-all">
+  <button id="add-object">Add Object</button>
+</div>
 </script>
 
 <script type="text/template" id="tpl-object-view">
