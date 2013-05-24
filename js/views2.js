@@ -200,21 +200,32 @@ var GROUML = GROUML || {};
         initialize: function() {
             this.collection = new GROUML.Collections.Objects();
             this.collection.on('reset', this.render, this);
-
+            
+            this.toolbarView = new v.ToolbarView({collection: this.collection, el: this.el});
+            
             var self = this;
-            GROUML.Events.on('board:change', function(board_id) {
-                self.changeBoard(board_id);
+            GROUML.Events.on('board:change', function(board) {
+                self.changeBoard(board);
+            });
+            
+            GROUML.Events.on('object:add', function(created) {
+                self.collection.add(created);
+                var objectView = new v.ObjectView({model:created});
+                self.$el.append(objectView.render().el);
+                objectView.setPositionAndDraggable();
             });
         },
-        changeBoard: function(board_id) {
+        changeBoard: function(board) {
             var self = this;
-            GROUML.Queries.GetObjects(board_id)
+            GROUML.Queries.GetObjects(board.get('board_id'))
                 .done(function(objects) {
                     objects = objects || [];
                     self.collection.reset(objects);
                 });
         },
         render: function() {
+            this.$el.append(this.toolbarView.render());
+            
             var count = 0;
             this.collection.each(function(m) {
                 var objectView = new v.ObjectView({model:m});
@@ -224,5 +235,38 @@ var GROUML = GROUML || {};
             return this;
         }
     });
+    
+    v.ToolbarView = Backbone.View.extend({
+        events: {
+            'click #add-object': function() {
+                console.log("add object handler");
+                this._board.createObject().done(function(m) {
+                        GROUML.Events.trigger('object:add', m);
+                });
+            },
+        },
+        initialize: function() {
+            this._template = _.template($('#tpl-toolbar-view').html());
+            
+            var self = this;
+            GROUML.Events.on('board:change', function(board) {
+                console.log("got board");
+                self._board = board;
+            });
+        },
+        render: function() {
+            this.$el.append(this._template());
+            
+            this.$el.find('#add-object').button({
+                text: false,
+                icons: {
+                    primary: "ui-icon-plusthick"
+                }
+            });
+            
+            return this;
+        }
+    });
+            
 
 })(GROUML.Views = GROUML.Views || {});
