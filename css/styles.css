@@ -14,7 +14,7 @@ div#viewport {
     min-height: 100%;
 }
 
-div#wall ._tile {
+div#board ._tile {
     background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAIElEQVQYV2OcP3/+fwYiACNI4a9fvwgqHVWIN4iIDh4AbuY3AUcrWFoAAAAASUVORK5CYII=);
 }
 
