@@ -45,21 +45,36 @@ div.uml-object input.object-name {
     border: 0;
     padding: 0;
     margin: 0;
-    border-bottom: 1px solid #666;
     padding-bottom: 10px;
     margin-bottom: 2px;
     background-color: #222;
-    width: 100%;
 }
 
-div.uml-object p.name:hover,
-div.uml-object ul.fields li span.name:hover{
-    cursor: text;
+div.uml-object input.delete-object {
+    position: relative;
+    float: right;
+    width: 20px;
+    height: 20px;
+    background-color: #222;
+}
+
+div.uml-object ul.fields {
+    border-top: 1px solid #666;
+    padding-top: 2px;
 }
 
 div.uml-object ul.fields li {
     position: relative;
     clear: both;
+}
+
+div.uml-object ul.fields li input.delete-field {
+    position: relative;
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    background-color: #222;
 }
 
 div.uml-object ul.fields li input.name {
@@ -102,7 +117,7 @@ div.uml-object input.add-field {
     z-index: 2;
     position: absolute;
     left: 20px;
-    top: 20px;
+    top: 60px;
 }
 
 #toolbar .ui-button {
@@ -119,7 +134,7 @@ div#field-options {
     z-index: 2;
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 60px;
     background-color: #ccc;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;

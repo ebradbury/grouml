@@ -78,11 +78,22 @@ var GROUML = GROUML || {};
             return this;
         }
     });
-
+    
     v.FieldView = Backbone.View.extend({
         tagName: 'li',
         _template: null,
         events: {
+            'click input.delete-field': function(e) {
+                var self = this;
+                this.model.destroy({
+                    success: function(model) {
+                        self.remove();
+                    },
+                    error: function(model, response) {
+                        console.debug(response);
+                    }
+                });
+            },
             'change input.name': function(e) {
                 var val = $(e.target).val();
                 this.model.set('name', val);
@@ -147,6 +158,19 @@ var GROUML = GROUML || {};
             });
         },
         events: {
+            'click .delete-object': function(e) {
+                alert("would delete object if authed");
+                
+                var self = this;
+                this.model.destroy({
+                    success: function(model) {
+                        self.remove();
+                    },
+                    error: function(model, response) {
+                        console.debug(response);
+                    }
+                });
+            },
             'change .object-name': function(e) {
                 var val = $(e.target).val();
                 this.model.set('name', val);
@@ -205,8 +229,6 @@ var GROUML = GROUML || {};
             this.collection = new GROUML.Collections.Objects();
             this.collection.on('reset', this.render, this);
             
-            this.toolbarView = new v.ToolbarView({collection: this.collection, el: this.el});
-            
             var self = this;
             GROUML.Events.on('board:change', function(board) {
                 self.changeBoard(board);
@@ -228,8 +250,6 @@ var GROUML = GROUML || {};
                 });
         },
         render: function() {
-            this.$el.append(this.toolbarView.render());
-            
             var count = 0;
             this.collection.each(function(m) {
                 var objectView = new v.ObjectView({model:m});
@@ -243,7 +263,6 @@ var GROUML = GROUML || {};
     v.ToolbarView = Backbone.View.extend({
         events: {
             'click #add-object': function() {
-                console.log("add object handler");
                 this._board.createObject().done(function(m) {
                         GROUML.Events.trigger('object:add', m);
                 });
@@ -254,7 +273,6 @@ var GROUML = GROUML || {};
             
             var self = this;
             GROUML.Events.on('board:change', function(board) {
-                console.log("got board");
                 self._board = board;
             });
         },
@@ -264,7 +282,7 @@ var GROUML = GROUML || {};
             this.$el.find('#add-object').button({
                 text: false,
                 icons: {
-                    primary: "ui-icon-plusthick"
+                    primary: 'ui-icon-plusthick'
                 }
             });
             

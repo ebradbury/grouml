@@ -75,7 +75,7 @@
 </script>
 
 <script type="text/template" id="tpl-object-view">
-<input class="object-name" value="<%=name%>">
+<input class="object-name" value="<%=name%>" /><input class="delete-object" type="image" src="img/glyphicons/glyphicons_192_circle_remove.png" title="Delete Object" />
 <div class="field-wrapper"></div>
 <div tabindex="-1" class="add-field-wrapper">
     <input type="image" tabindex="-1" src="img/glyphicons/glyphicons_190_circle_plus.png">
@@ -83,18 +83,14 @@
 </script>
 
 <script type="text/template" id="tpl-field-view">
-<input class="name" value="<%=name%>"><select dir="rtl" class="type">
-
+<input class="delete-field" type="image" src="img/glyphicons/glyphicons_191_circle_minus.png" title="Delete Field" />
+<input class="name" value="<%=name%>" />
+<select dir="rtl" class="type">
         <option value="int">int</option>
-
         <option value="float">float</option>
-
         <option value="boolean">boolean</option>
-
         <option value="char">char</option>
-
         <option value="text">text</option>
-
 </select>
 </script>
 

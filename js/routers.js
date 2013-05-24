@@ -12,11 +12,10 @@ var GROUML = GROUML || {};
             'board/:id/:field': 'board'
         },
         initialize: function() {
+            this._toolbarView = new GROUML.Views.ToolbarView({el: '#board-tab'}).render();
             this._boardView = new GROUML.Views.BoardView({el:'#board'});
-
-            this._optionsView = new GROUML.Views.OptionsView({
-               el: '#field-options'
-            });
+            this._optionsView = new GROUML.Views.OptionsView({el: '#field-options'});
+            
             Backbone.history.start();
         },
         index: function() {
@@ -38,7 +37,6 @@ var GROUML = GROUML || {};
                 var self = this;
                 this._board.fetch({
                     success: function(m) {
-                        console.log("Fetched Board");
                         GROUML.Events.trigger('board:change', m);
                     },
                     error: function(m, r) {
