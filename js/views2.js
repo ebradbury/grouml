@@ -156,6 +156,8 @@ var GROUML = GROUML || {};
             this._fieldsView = new v.FieldsView({
                 object_id: this.model.get('object_id')
             });
+            
+            this._spinner = new Spinner({ lines: 10, length: 8, width: 4, radius: 8, color: '#999'});
         },
         events: {
             'click .delete-object': function(e) {
@@ -177,10 +179,12 @@ var GROUML = GROUML || {};
                 this.model.save();
             },
             'click .add-field-wrapper': function() {
+                this.loading(true);
                 var self = this;
                 this.model.createField()
                 .done(function(m) {
                     self._fieldsView.addNew(m);
+                    self.loading(false);
                 });
             }
         },
@@ -205,13 +209,22 @@ var GROUML = GROUML || {};
                 grid: [gridSize, gridSize],
                 stop: function() {
                     var position = $(this).position();
+                    
+                    // double bitwise not truncates floats
                     model.set({
-                        x: position.left,
-                        y: position.top
+                        x: ~~position.left,
+                        y: ~~position.top
                     });
                     model.save();
                 }
             }).resizable({ grid: [gridSize, gridSize] })
+        },
+        loading: function(flag) {
+            if(flag) {
+                this._spinner.spin(this.el);
+            } else {
+                this._spinner.stop();
+            }
         },
         render: function() {
             this.$el.append(this._template(this.model.toJSON()));
@@ -250,11 +263,10 @@ var GROUML = GROUML || {};
                 });
         },
         render: function() {
-            var count = 0;
             this.collection.each(function(m) {
                 var objectView = new v.ObjectView({model:m});
                 this.$el.append(objectView.render().el);
-                objectView.setPositionAndDraggable(count++ === 0);
+                objectView.setPositionAndDraggable();
             }, this);
             return this;
         }
