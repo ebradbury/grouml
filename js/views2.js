@@ -28,21 +28,22 @@ var GROUML = GROUML || {};
     });
 
     v.OptionsView = Backbone.View.extend({
-        id: 'field-options',
         _fieldId: null,
         events: {
             'click .add-field-option-wrapper': function() {
                 var self = this;
-                var field = GROUML.Models.Field({
+                var field = new GROUML.Models.Field({
                     field_id: this._fieldId
                 });
 
-                field.fetch().done(function(m) {
-                    m.createOption()
+                field.fetch({
+                    success: function(m) {
+                        m.createOption()
                         .done(function(m) {
-                            var $options = this.$el.find('ul');
+                            var $options = self.$el.find('ul');
                             $options.append(new v.OptionView({model:m}).render().el);
                         });
+                    }
                 });
             }
         },
@@ -68,7 +69,7 @@ var GROUML = GROUML || {};
                 });
         },
         render: function() {
-            this.$el.html(this._template(this.model.toJSON()));
+            this.$el.html(this._template());
 
             var $options = this.$el.find('ul');
             this.collection.each(function(m){
@@ -91,6 +92,9 @@ var GROUML = GROUML || {};
                 var val = $(e.target).val();
                 this.model.set('type', val);
                 this.model.save();
+            },
+            'click': function() {
+                GROUML.Events.trigger('field:change', this.model.get('field_id'));
             }
         },
         initialize: function() {

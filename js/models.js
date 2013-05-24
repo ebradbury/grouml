@@ -54,7 +54,7 @@ var GROUML = GROUML || {};
             var self = this;
             var obj = new m.Option({
                 name: 'New Option',
-                type: 'value'
+                value: 'value'
             });
             obj.create({
                 success: function(z) {

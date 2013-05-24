@@ -4,6 +4,7 @@ var GROUML = GROUML || {};
 
     r.MainRouter = Backbone.Router.extend({
         _boardView: null,
+        _optionsView: null,
         _boardId: null,
         routes: {
             '': 'index',
@@ -14,6 +15,11 @@ var GROUML = GROUML || {};
             this._boardView = new GROUML.Views.BoardView({
                 el: '#wall'
             });
+
+            this._optionsView = new GROUML.Views.OptionsView({
+               el: '#field-options'
+            });
+
             Backbone.history.start();
         },
         index: function() {
