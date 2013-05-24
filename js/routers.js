@@ -11,9 +11,7 @@ var GROUML = GROUML || {};
             'board/:id/:field': 'board'
         },
         initialize: function() {
-            this._boardView = new GROUML.Views.BoardView({
-                el: '#wall'
-            });
+            this._boardView = new GROUML.Views.BoardView({el:'#board'});
             Backbone.history.start();
         },
         index: function() {
@@ -30,7 +28,18 @@ var GROUML = GROUML || {};
         board: function(id, field) {
             if (this._boardId !== id) {
                 this._boardId = id;
-                GROUML.Events.trigger('board:change', id);
+                this._board = new GROUML.Models.Board({board_id: id});
+                
+                var self = this;
+                this._board.fetch({
+                    success: function(m) {
+                        console.log("Fetched Board");
+                        GROUML.Events.trigger('board:change', m);
+                    },
+                    error: function(m, r) {
+                        console.debug(r);
+                    },
+                });
             }
 
             if (field) {
