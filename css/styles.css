@@ -175,3 +175,7 @@ div#code-options select#generator {
 div#code-options select#generator option {
     color: #222;
 }
+
+div#code-output pre {
+    white-space: pre;
+}
