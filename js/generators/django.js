@@ -27,10 +27,10 @@
                     if(f.options) {
                         var optLength = f.options.length || 0;
                         _(f.options).each(function(opt, idx) {
-                            if(idx == optLength) {
-                                code += opt.get('name') + '=' + opt.get('value');
+                            if(idx+1 == optLength) {
+                                code += opt.name + '=' + opt.value;
                             } else {
-                                code += opt.get('name') + '=' + opt.get('value') + ', ';
+                                code += opt.name + '=' + opt.value + ', ';
                             }
                         }, this);
                     }
