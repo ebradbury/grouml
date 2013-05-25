@@ -249,7 +249,7 @@ var GROUML = GROUML || {};
                 self.collection.add(created);
                 var objectView = new v.ObjectView({model:created});
                 self.$el.append(objectView.render().el);
-                objectView.setPositionAndDraggable();
+                objectView.setPositionAndDraggable(true);
             });
         },
         changeBoard: function(board) {
