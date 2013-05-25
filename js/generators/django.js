@@ -15,7 +15,34 @@
     var djangoGenerator = {
         name: 'Django',
         generate: function(board) {
-            return 'code';
+            var code = '<pre>';
+            var objs = board.get('objects');
+            
+            _(objs).each(function(o) {
+                code += 'class ' + o.name + '(models.Model):\n'
+                
+                _(o.fields).each(function(f) {
+                    code += indent + f.name + ' = models.' + djangoTypeMapping[f.type] + '(';
+                    
+                    if(f.options) {
+                        var optLength = f.options.length || 0;
+                        _(f.options).each(function(opt, idx) {
+                            if(idx == optLength) {
+                                code += opt.get('name') + '=' + opt.get('value');
+                            } else {
+                                code += opt.get('name') + '=' + opt.get('value') + ', ';
+                            }
+                        }, this);
+                    }
+                    
+                    code += ')\n';
+                }, this);
+                
+                code += '\n\n';
+                
+            }, this);
+                
+            return code + '</pre>';
         }
     };
 

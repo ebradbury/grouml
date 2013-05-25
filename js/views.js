@@ -314,26 +314,30 @@ var GROUML = GROUML || {};
                 this._currentGenerator = GROUML.Generators.getGenerator(selectedGenerator);
                 
                 this.render();
-                
-                console.log(selectedGenerator);
             },
         },
         initialize: function() {
             this._template = _.template($('#tpl-code-view').html());
             this._generatorNames = GROUML.Generators.getGeneratorNames()
             
+            var self = this;
             GROUML.Events.on('board:change', function(board) {
-                this._board = board;
+                self._board = board;
             });
         },
         render: function() {
-            var currentGeneratorName, code = '';
             if(this._currentGenerator) {
-                currentGeneratorName = this._currentGenerator.name;
-                code = this._currentGenerator.generate(this._board);
+                var self = this;
+                
+                this._board.fetchExpanded(3, {
+                    success: function(b) {
+                        var code = self._currentGenerator.generate(b);
+                        self.$el.html(self._template({generators: self._generatorNames, currentGeneratorName:  self._currentGenerator.name, code: code }));
+                    },
+                });
+            } else {
+                this.$el.html(this._template({generators: this._generatorNames, currentGeneratorName:  '', code: '' }));
             }
-            
-            this.$el.html(this._template({generators: this._generatorNames, currentGeneratorName:  currentGeneratorName, code: code }));
             
             return this;
         },
