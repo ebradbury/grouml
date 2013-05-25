@@ -299,6 +299,44 @@ var GROUML = GROUML || {};
             return this;
         }
     });
+    
+    v.CodeView = Backbone.View.extend({
+        _board: null,
+        _currentGenerator: null,
+        _generatorNames: null,
+        events: {
+            'change select#generator': function(e) {
+                var selectedGenerator = $(e.target).val();
+                
+                if(selectedGenerator == '')
+                    return;
+                
+                this._currentGenerator = GROUML.Generators.getGenerator(selectedGenerator);
+                
+                this.render();
+                
+                console.log(selectedGenerator);
+            },
+        },
+        initialize: function() {
+            this._template = _.template($('#tpl-code-view').html());
+            this._generatorNames = GROUML.Generators.getGeneratorNames()
             
+            GROUML.Events.on('board:change', function(board) {
+                this._board = board;
+            });
+        },
+        render: function() {
+            var currentGeneratorName, code = '';
+            if(this._currentGenerator) {
+                currentGeneratorName = this._currentGenerator.name;
+                code = this._currentGenerator.generate(this._board);
+            }
+            
+            this.$el.html(this._template({generators: this._generatorNames, currentGeneratorName:  currentGeneratorName, code: code }));
+            
+            return this;
+        },
+    });
 
 })(GROUML.Views = GROUML.Views || {});

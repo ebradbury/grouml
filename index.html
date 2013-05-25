@@ -32,12 +32,16 @@
             apiVersion : 0
         });
     </script>
+    
     <script src="js/util.js"></script>
     <script src="js/models.js"></script>
     <script src="js/collections.js"></script>
     <script src="js/queries.js"></script>
     <script src="js/views.js"></script>
     <script src="js/routers.js"></script>
+    
+    <script src="js/generators/django.js"></script>
+    
     <script src="js/init.js"></script>
     
     <style type='text/css'>@import url('http://getbarometer.s3.amazonaws.com/assets/barometer/css/barometer.css');</style>
@@ -70,7 +74,6 @@
         <div id="field-options"></div>
     </div>
     <div id="code-tab">
-        <p>Code up in here</p>
     </div>
 </div>
 
@@ -122,6 +125,21 @@
 
 <script type="text/template" id="tpl-option-view">
 <input value="<%=name%>" class="key"><input value="<%=value%>" class="value">
+</script>
+
+<script type="text/template" id="tpl-code-view">
+<div id="code-options">
+    <label for-"generator">Select Output Language: </label>
+    <select id="generator">
+        <option value="">--- select ---</option>
+    <% _.each(generators, function(g){ %>
+            <option <% if(currentGeneratorName == g) { %>selected="selected" <% } %>value="<%=g%>"><%=g%></option>
+    <% }); %>
+    </select>
+</div>
+<div id="code-output">
+<%=code%>
+</div>
 </script>
 
 </html>

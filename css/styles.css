@@ -163,3 +163,15 @@ div#field-options input.add-field-option {
     clear: both;
     margin: 0 auto;
 }
+
+div#code-options {
+    padding: 10px;
+}
+
+div#code-options select#generator {
+    color: #222;
+}
+
+div#code-options select#generator option {
+    color: #222;
+}

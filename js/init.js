@@ -5,10 +5,16 @@ var GROUML = GROUML || {};
     GROUML.Events = _.extend({}, Backbone.Events);
 
     $(function() {
+        var codeView = new GROUML.Views.CodeView({el: '#code-tab'});
+        
         $('#tabs').tabs({
             heightStyle: 'fill',
-            activate: function(event, ui) {},
-        }).removeClass('ui-corner-all');;
+            activate: function(event, ui) {
+                if(ui.newPanel.attr('id') == 'code-tab') {
+                    codeView.render();
+                }
+            },
+        }).removeClass('ui-corner-all');
         
         $('#tabs ul.ui-tabs-nav').removeClass('ui-corner-all');
         

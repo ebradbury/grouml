@@ -56,3 +56,22 @@ GROUML.Utility = (function() {
         },
     }
 })();
+
+GROUML.Generators = (function() {
+    var generators = {};
+    return {
+        registerGenerator: function(name, generator) {
+            generators[name] = generator;
+        },
+        getGenerator: function(name) {
+            return generators[name];
+        },
+        getGeneratorNames: function() {
+            var names = [];
+            for (var i in generators) {
+                names.push(i);
+            }
+            return names;
+        }
+    };
+})();
