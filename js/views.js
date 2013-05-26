@@ -331,9 +331,32 @@ var GROUML = GROUML || {};
                 
                 this._board.fetchExpanded(3, {
                     success: function(b) {
-                        var code = self._currentGenerator.generate(b);
-                        self.$el.html(self._template({generators: self._generatorNames, currentGeneratorName:  self._currentGenerator.name, code: code }));
-                    },
+                        var code = self._currentGenerator.generate(b),
+                            brush = self._currentGenerator.getBrush(),
+                            loadBrush = null;
+
+                        var $pre = $('<pre>');
+                        $pre.html(code);
+
+                        if (brush) {
+                            $pre.addClass('brush: ' + brush);
+                            loadBrush = GROUML.Syntax.ensureBrush(brush);
+                        }
+
+                        var params = {
+                            generators: self._generatorNames,
+                            currentGeneratorName:  self._currentGenerator.name
+                        };
+
+                        self.$el.html(self._template(params));
+
+                        var $output = self.$el.find('#code-output');
+                        $output.append($pre);
+
+                        loadBrush.done(function() {
+                            SyntaxHighlighter.highlight();
+                        });
+                    }
                 });
             } else {
                 this.$el.html(this._template({generators: this._generatorNames, currentGeneratorName:  '', code: '' }));
