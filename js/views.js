@@ -54,22 +54,22 @@ var GROUML = GROUML || {};
             this._template = _.template($('#tpl-options-view').html());
 
             var self = this;
-            GROUML.Events.on('field:change', function(field_id) {
-                self.changeField(field_id);
+            GROUML.Events.on('field:change', function(field) {
+                self.changeField(field);
             });
         },
-        changeField: function(field_id) {
-            this._fieldId = field_id;
+        changeField: function(field) {
+            this._field = field;
 
             var self = this;
-            GROUML.Queries.GetOptions(field_id)
+            GROUML.Queries.GetOptions(this._field.get('field_id'))
                 .done(function(options) {
                     options = options || [];
                     self.collection.reset(options);
                 });
         },
         render: function() {
-            this.$el.html(this._template());
+            this.$el.html(this._template({name: this._field.get('name')}));
 
             var $options = this.$el.find('ul');
             this.collection.each(function(m){
@@ -105,7 +105,7 @@ var GROUML = GROUML || {};
                 this.model.save();
             },
             'click': function() {
-                GROUML.Events.trigger('field:change', this.model.get('field_id'));
+                GROUML.Events.trigger('field:change', this.model);
             }
         },
         initialize: function() {
