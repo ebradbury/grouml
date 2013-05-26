@@ -63,7 +63,7 @@ GROUML.Tracking = (function (window, document) {
         },
         Generator: {
             changed: function(name) {
-                ga('send', 'event', 'option', 'changed', name);
+                ga('send', 'event', 'generator', 'changed', name);
             }
         }
     };
