@@ -166,6 +166,7 @@ div#field-options input.add-field-option {
 
 div#code-options {
     padding: 10px;
+    margin-left: 30px;
 }
 
 div#code-options select#generator {
@@ -174,6 +175,10 @@ div#code-options select#generator {
 
 div#code-options select#generator option {
     color: #222;
+}
+
+div#code-output {
+    margin-left: 30px;
 }
 
 div#code-output pre {
