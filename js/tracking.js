@@ -60,6 +60,11 @@ GROUML.Tracking = (function (window, document) {
             editValue: function () {
                 ga('send', 'event', 'option', 'edit-value');
             }
+        },
+        Generator: {
+            changed: function(name) {
+                ga('send', 'event', 'option', 'changed', name);
+            }
         }
     };
 })(window, document);
