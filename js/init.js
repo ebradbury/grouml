@@ -2,8 +2,6 @@ var GROUML = GROUML || {};
 
 (function($) {
 
-    GROUML.Events = _.extend({}, Backbone.Events);
-
     $(function() {
         var codeView = new GROUML.Views.CodeView({el: '#code-tab'});
         
