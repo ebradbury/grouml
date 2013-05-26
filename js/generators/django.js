@@ -14,8 +14,11 @@
 
     var djangoGenerator = {
         name: 'Django',
+        getBrush: function() {
+            return 'py';
+        },
         generate: function(board) {
-            var code = '<pre>';
+            var code = '';
             var objs = board.get('objects');
             
             _(objs).each(function(o) {
@@ -42,7 +45,7 @@
                 
             }, this);
                 
-            return code + '</pre>';
+            return code;
         }
     };
 
