@@ -99,16 +99,22 @@ var GROUML = GROUML || {};
                         console.debug(response);
                     }
                 });
+
+                GROUML.Events.trigger(GROUML.EventConstants.Field.Delete);
             },
             'change input.name': function(e) {
                 var val = $(e.target).val();
                 this.model.set('name', val);
                 this.model.save();
+
+                GROUML.Events.trigger(GROUML.EventConstants.Field.EditName);
             },
             'change select.type': function(e) {
                 var val = $(e.target).val();
                 this.model.set('type', val);
                 this.model.save();
+
+                GROUML.Events.trigger(GROUML.EventConstants.Field.EditType);
             },
             'click': function() {
                 GROUML.Events.trigger('field:change', this.model);
@@ -176,11 +182,14 @@ var GROUML = GROUML || {};
                         console.debug(response);
                     }
                 });
+                GROUML.Events.trigger(GROUML.EventConstants.Object.Delete);
             },
             'change .object-name': function(e) {
                 var val = $(e.target).val();
                 this.model.set('name', val);
                 this.model.save();
+
+                GROUML.Events.trigger(GROUML.EventConstants.Object.EditName);
             },
             'click .add-field-wrapper': function() {
                 this.loading(true);
@@ -190,6 +199,8 @@ var GROUML = GROUML || {};
                     self._fieldsView.addNew(m);
                     self.loading(false);
                 });
+
+                GROUML.Events.trigger(GROUML.EventConstants.Field.Add);
             }
         },
         setPositionAndDraggable: function(is_first) {
@@ -220,6 +231,8 @@ var GROUML = GROUML || {};
                         y: ~~position.top
                     });
                     model.save();
+
+                    GROUML.Events.trigger(GROUML.EventConstants.Object.DragEnd);
                 }
             }).resizable({ grid: [gridSize, gridSize] })
         },
