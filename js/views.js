@@ -329,7 +329,9 @@ var GROUML = GROUML || {};
                 
                 if(selectedGenerator == '')
                     return;
-                
+
+                GROUML.Events.trigger(GROUML.EventConstants.Generator.Changed, selectedGenerator);
+
                 this._currentGenerator = GROUML.Generators.getGenerator(selectedGenerator);
                 
                 this.render();

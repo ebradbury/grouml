@@ -21,6 +21,9 @@ GROUML.EventConstants = (function() {
             Delete: 'option:delete',
             EditName: 'option:edit:name',
             EditValue: 'option:edit:value'
+        },
+        Generator: {
+            Changed: 'generator:changed'
         }
     }
 })();
@@ -79,6 +82,12 @@ GROUML.EventConstants = (function() {
 
     e.on(GROUML.EventConstants.Option.EditValue, function() {
         GROUML.Tracking.Option.editValue();
+    });
+
+    // generator events
+
+    e.on(GROUML.EventConstants.Generator.Changed, function(name) {
+        GROUML.Tracking.Generator.changed(name);
     });
 
 })(GROUML.Events);
