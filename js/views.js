@@ -11,11 +11,15 @@ var GROUML = GROUML || {};
                 var val = $(e.target).val();
                 this.model.set('name', val);
                 this.model.save();
+
+                GROUML.Events.trigger(GROUML.EventConstants.Option.EditName);
             },
             'change .value': function(e) {
                 var val = $(e.target).val();
                 this.model.set('value', val);
                 this.model.save();
+
+                GROUML.Events.trigger(GROUML.EventConstants.Option.EditValue);
             }
         },
         initialize: function() {
@@ -45,6 +49,8 @@ var GROUML = GROUML || {};
                         });
                     }
                 });
+
+                GROUML.Events.trigger(GROUML.EventConstants.Option.Add);
             }
         },
         initialize: function() {
